@@ -1,2 +1,13 @@
 module.exports.Token = require('./token.model');
 module.exports.User = require('./user.model');
+module.exports.Comment = require('./comment.model');
+module.exports.Transaction = require('./transaction.model');
+module.exports.ProductList = require('./productList.model');
+module.exports.Product = require('./product.model');
+module.exports.Image = require('./image.model');
+module.exports.Refund = require('./refund.model');
+module.exports.Wallet = require('./wallet.model');
+module.exports.Notification = require('./notification.model');
+module.exports.Mess = require('./mess.model');
+module.exports.Order = require('./order.model');
+module.exports.Cart = require('./cart.model');
