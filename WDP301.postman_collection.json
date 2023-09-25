@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "ac8b9e54-6703-4fa6-aa8e-3d5dce7254c0",
+		"name": "WDP301",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23683335"
+	},
+	"item": [
+		{
+			"name": "authentication",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"address\": \"\",\r\n    \"phoneNumber\": 1234567890\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}auth/register/",
+							"host": [
+								"{{localhost}}auth"
+							],
+							"path": [
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}auth/login/",
+							"host": [
+								"{{localhost}}auth"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTExNDVjNmJlY2NjZTJmMThiYzg3MGYiLCJpYXQiOjE2OTU2MzA5OTksImV4cCI6MTY5ODIyMjk5OSwidHlwZSI6InJlZnJlc2gifQ.gUsXtrUFHYwbWKdbJeclyZPiQVyrY_0Z-gus4ND1mX8\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}auth/logout/",
+							"host": [
+								"{{localhost}}auth"
+							],
+							"path": [
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image",
+			"item": [
+				{
+					"name": "post image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}",
+							"host": [
+								"{{localhost}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTExNDVjNmJlY2NjZTJmMThiYzg3MGYiLCJpYXQiOjE2OTU2MzA5OTksImV4cCI6MTY5ODIyMjk5OSwidHlwZSI6InJlZnJlc2gifQ.gUsXtrUFHYwbWKdbJeclyZPiQVyrY_0Z-gus4ND1mX8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "localhost:3000/v1/"
+		}
+	]
+}
