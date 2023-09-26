@@ -11,7 +11,7 @@ const handleUpload = async (file) => {
         folder: "Altermio",
         resource_type: "auto"
     });
-    return res;
+    return res.secure_url;
 }
 
 module.exports = {
