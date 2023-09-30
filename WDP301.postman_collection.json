@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"address\": \"\",\r\n    \"phoneNumber\": 1234567890\r\n}",
+							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"phoneNumber\": 1234567891\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -93,21 +93,250 @@
 			]
 		},
 		{
-			"name": "Image",
+			"name": "image",
 			"item": [
 				{
 					"name": "post image",
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "myFile",
+									"contentType": "multipart/form-data",
+									"type": "file",
+									"src": "/D:/WDP301/image/cay dua.jpg"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{localhost}}",
+							"raw": "{{localhost}}images/uploadSingleFile",
 							"host": [
-								"{{localhost}}"
+								"{{localhost}}images"
+							],
+							"path": [
+								"uploadSingleFile"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "post images",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"contentType": "multipart/form-data",
+									"type": "file",
+									"src": "/D:/WDP301/image/tree.jpg"
+								},
+								{
+									"key": "images",
+									"contentType": "multipart/form-data",
+									"type": "file",
+									"src": "/D:/WDP301/image/beach.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost}}images/uploadMultipleFiles",
+							"host": [
+								"{{localhost}}images"
+							],
+							"path": [
+								"uploadMultipleFiles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comment",
+			"item": [
+				{
+					"name": "user comments",
+					"item": [
+						{
+							"name": "get comments of user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/{{userId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{userId}}"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "rating",
+											"disabled": true
+										},
+										{
+											"key": "options",
+											"value": "sortBy",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "specific comment",
+					"item": [
+						{
+							"name": "post comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Hang chat luong cao\",\r\n    \"sellerId\": \"651145c6beccce2f18bc870f\",\r\n    \"productId\": \"651454f9f31b262156eb3a3d\",\r\n    \"rating\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}comments/{{userId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get comment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update comment",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Good product\",\r\n    \"rating\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete comment",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report comment",
+					"item": [
+						{
+							"name": "get reported comments",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "report comment",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/{{commentId}}/submit",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"{{commentId}}",
+										"submit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deny reported comment",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/{{commentId}}/deny",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"{{commentId}}",
+										"deny"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
@@ -146,6 +375,14 @@
 		{
 			"key": "localhost",
 			"value": "localhost:3000/v1/"
+		},
+		{
+			"key": "userId",
+			"value": "65144fa99636ee19481f0cdf"
+		},
+		{
+			"key": "commentId",
+			"value": "651457a4f86c352db471b5a4"
 		}
 	]
 }
