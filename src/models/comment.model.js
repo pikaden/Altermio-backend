@@ -23,6 +23,10 @@ const commentSchema = mongoose.Schema({
     rating: {
         type: Number,
         default: 0
+    },
+    isReported: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true }
 )

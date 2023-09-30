@@ -44,7 +44,7 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Image',
       // TODO: set default image for user avatar
-      default: ''
+      // default: ''
     },
     address: {
       type: String,
