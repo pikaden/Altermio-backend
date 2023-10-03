@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"address\": \"\",\r\n    \"phoneNumber\": 1234567890\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"phoneNumber\": 1234567891\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -38,12 +38,29 @@
 				},
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json(); \r",
+									"\r",
+									"pm.collectionVariables.set(\"accessToken\", res.tokens.access.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -93,17 +110,314 @@
 			]
 		},
 		{
-			"name": "Image",
+			"name": "image",
 			"item": [
 				{
-					"name": "post image",
+					"name": "single file",
+					"item": [
+						{
+							"name": "post file",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "myFile",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/cay dua.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{localhost}}images/singleFile/upload",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"singleFile",
+										"upload"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete file",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}images/singleFile/delete/{{imageId}}",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"singleFile",
+										"delete",
+										"{{imageId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "multiple files",
+					"item": [
+						{
+							"name": "post files",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/tree.jpg"
+										},
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/beach.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{localhost}}images/multipleFiles/upload",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"multipleFiles",
+										"upload"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "comment",
+			"item": [
+				{
+					"name": "user comments",
+					"item": [
+						{
+							"name": "get comments of user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/user/{{userId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"user",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "specific comment",
+					"item": [
+						{
+							"name": "post comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Hang chat luong cao\",\r\n    \"sellerId\": \"651145c6beccce2f18bc870f\",\r\n    \"productId\": \"651454f9f31b262156eb3a3d\",\r\n    \"rating\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}comments/user/{{userId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"user",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get comment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update comment",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Good product\",\r\n    \"rating\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete comment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}comments/{{commentId}}",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"{{commentId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report comment",
+					"item": [
+						{
+							"name": "get reported comments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/all",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "report comment",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/{{commentId}}/submit",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"{{commentId}}",
+										"submit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deny reported comment",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/{{commentId}}/deny",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"{{commentId}}",
+										"deny"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get users",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{localhost}}",
+							"raw": "{{localhost}}users?role=admin",
 							"host": [
-								"{{localhost}}"
+								"{{localhost}}users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "admin"
+								}
 							]
 						}
 					},
@@ -117,7 +431,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTExNDVjNmJlY2NjZTJmMThiYzg3MGYiLCJpYXQiOjE2OTU2MzA5OTksImV4cCI6MTY5ODIyMjk5OSwidHlwZSI6InJlZnJlc2gifQ.gUsXtrUFHYwbWKdbJeclyZPiQVyrY_0Z-gus4ND1mX8",
+				"value": "{{accessToken}}",
 				"type": "string"
 			}
 		]
@@ -146,6 +460,22 @@
 		{
 			"key": "localhost",
 			"value": "localhost:3000/v1/"
+		},
+		{
+			"key": "userId",
+			"value": "651acf49311d2c2f34aca66f"
+		},
+		{
+			"key": "commentId",
+			"value": "651a9eade23e254ab89b18d7"
+		},
+		{
+			"key": "accessToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTFhODdlZWE0MjEwMzI0YzAzYTAwOTkiLCJpYXQiOjE2OTYyMzg1MzIsImV4cCI6MTY5NjI0MDMzMiwidHlwZSI6ImFjY2VzcyJ9.XY9PlsbpNke1iYNa82a3jBbJ1Krys4Mu78M6fxSmFs8"
+		},
+		{
+			"key": "imageId",
+			"value": "651b78f806797549fc7c7147"
 		}
 	]
 }
