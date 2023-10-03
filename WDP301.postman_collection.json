@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"phoneNumber\": 1234567891\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"phoneNumber\": 1234567891\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -38,12 +38,29 @@
 				},
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json(); \r",
+									"\r",
+									"pm.collectionVariables.set(\"accessToken\", res.tokens.access.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fake@example.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -171,24 +188,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localhost}}comments/{{userId}}",
+									"raw": "{{localhost}}comments/user/{{userId}}",
 									"host": [
 										"{{localhost}}comments"
 									],
 									"path": [
+										"user",
 										"{{userId}}"
-									],
-									"query": [
-										{
-											"key": "filter",
-											"value": "rating",
-											"disabled": true
-										},
-										{
-											"key": "options",
-											"value": "sortBy",
-											"disabled": true
-										}
 									]
 								}
 							},
@@ -214,11 +220,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{localhost}}comments/{{userId}}",
+									"raw": "{{localhost}}comments/user/{{userId}}",
 									"host": [
 										"{{localhost}}comments"
 									],
 									"path": [
+										"user",
 										"{{userId}}"
 									]
 								}
@@ -246,7 +253,13 @@
 							"name": "update comment",
 							"request": {
 								"method": "PATCH",
-								"header": [],
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\r\n    \"content\": \"Good product\",\r\n    \"rating\": 5\r\n}",
@@ -272,7 +285,13 @@
 							"name": "delete comment",
 							"request": {
 								"method": "DELETE",
-								"header": [],
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "{{localhost}}comments/{{commentId}}",
 									"host": [
@@ -294,7 +313,17 @@
 							"name": "get reported comments",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}comments/reportComments/all",
+									"host": [
+										"{{localhost}}comments"
+									],
+									"path": [
+										"reportComments",
+										"all"
+									]
+								}
 							},
 							"response": []
 						},
@@ -339,6 +368,31 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}users?role=admin",
+							"host": [
+								"{{localhost}}users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
@@ -346,7 +400,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTExNDVjNmJlY2NjZTJmMThiYzg3MGYiLCJpYXQiOjE2OTU2MzA5OTksImV4cCI6MTY5ODIyMjk5OSwidHlwZSI6InJlZnJlc2gifQ.gUsXtrUFHYwbWKdbJeclyZPiQVyrY_0Z-gus4ND1mX8",
+				"value": "{{accessToken}}",
 				"type": "string"
 			}
 		]
@@ -378,11 +432,15 @@
 		},
 		{
 			"key": "userId",
-			"value": "65144fa99636ee19481f0cdf"
+			"value": "651acf49311d2c2f34aca66f"
 		},
 		{
 			"key": "commentId",
-			"value": "651457a4f86c352db471b5a4"
+			"value": "651a9eade23e254ab89b18d7"
+		},
+		{
+			"key": "accessToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTFhODdlZWE0MjEwMzI0YzAzYTAwOTkiLCJpYXQiOjE2OTYyMzg1MzIsImV4cCI6MTY5NjI0MDMzMiwidHlwZSI6ImFjY2VzcyJ9.XY9PlsbpNke1iYNa82a3jBbJ1Krys4Mu78M6fxSmFs8"
 		}
 	]
 }

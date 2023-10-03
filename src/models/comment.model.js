@@ -31,6 +31,17 @@ const commentSchema = mongoose.Schema({
 }, { timestamps: true }
 )
 
+commentSchema.pre('remove', function (next) {
+    const comment = this;
+    // Remove all the User docs that reference the removed comment.
+    comment.model('User').update(
+        { comments: comment._id },
+        { $pull: { comments: comment._id } },
+        { multi: true },
+        next
+    );
+})
+
 /**
  * @typedef Comment
  */

@@ -1,8 +1,8 @@
 const allRoles = {
-  user: [],
-  admin: ['getUsers', 'manageUsers', 'manageReportedComments'],
-  moderator: ['manageReportedComments'],
-  courier: []
+  user: ['postComment', 'updateComment', 'deleteComment', 'reportComment'],
+  admin: ['getUsers', 'manageUsers', 'postComment', 'deleteComment', 'reportComment', 'manageReportedComments'],
+  moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments'],
+  courier: ['reportComment']
 };
 
 const roles = Object.keys(allRoles);

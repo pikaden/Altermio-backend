@@ -1,7 +1,11 @@
 const httpStatus = require('http-status');
 const { Comment } = require('../models');
+const { tokenService } = require('.');
 const ApiError = require('../utils/ApiError');
 const { userService } = require('.');
+const { tokenTypes } = require('../config/tokens');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
 
 /**
  * Create a comment
@@ -40,69 +44,75 @@ const getCommentById = async (id) => {
 
 /**
  * Query for commments of a user
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
+ * @param {ObjectId} userId
  * @returns {Promise<QueryResult>}
  */
-const queryCommentsByUserId = async (userId, filter, options) => {
-  // TODO: get comments by userId, paginate comments array
+const queryCommentsByUserId = async (userId) => {
   const user = await userService.getUserById(userId);
-
-  // const comments = await Comment.paginate(filter, options);
   return user.comments;
 }
 
 /**
  * Update comment by id
+ * @param {String} accessTokenFromHeader
  * @param {ObjectId} commentId 
  * @param {Object} commentBody 
- * @returns 
+ * @returns {Promise<Comment>}
  */
-const updateCommentById = async (commentId, commentBody) => {
+const updateCommentById = async (accessTokenFromHeader, commentId, commentBody) => {
   const comment = await getCommentById(commentId);
 
   if (!comment) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Comment not found');
   }
 
-  Object.assign(comment, commentBody);
-  await comment.save();
-  return comment;
+  // get userId from token
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+
+  // only author can update their own comment
+  if (userId == comment.buyerId) {
+    Object.assign(comment, commentBody);
+    await comment.save();
+    return comment;
+  }
 }
 
 /**
  * Delete comment by id
+ * @param {String} accessTokenFromHeader
  * @param {ObjectId} commentId
  * @returns {Promise<Comment>}
  */
-const deleteCommentById = async (commentId) => {
+const deleteCommentById = async (accessTokenFromHeader, commentId) => {
   const comment = await getCommentById(commentId);
 
   if (!comment) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Comment not found');
   }
 
-  await comment.remove();
-  return comment;
+  // get userId from token
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+
+  const user = await userService.getUserById(userId);
+  const userRole = user.role;
+
+  // so sanh role comment.buyerId and userId to delete
+  if (userRole == 'admin' || userRole == 'moderator' || (userRole == 'user' && userId == comment.buyerId)) {
+    // delete in comments, users
+    await comment.remove();
+    return comment;
+  } else throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to do this command');
 };
 
 /**
  * Query for reported comments
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
  * @returns {Promise<QueryResult>}
  */
 const queryReportedComments = async () => {
-  // TODO: get comments by userId, paginate comments array
-
-  const comments = await Comment.paginate(filter, options);
-  return Comment.findById(id);
+  const reportedComments = await Comment.find({ isReported: true });
+  return reportedComments;
 }
 
 /**

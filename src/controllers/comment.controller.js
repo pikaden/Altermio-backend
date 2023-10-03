@@ -3,11 +3,6 @@ const pick = require('../utils/pick');
 const catchAsync = require('../utils/catchAsync');
 const { commentService } = require('../services');
 
-// TODO:
-// query all comments, reported comments
-// role admin and moderator can delete reported comment
-// role user can delete their own comment
-
 const postComment = catchAsync(async (req, res) => {
   const comment = await commentService.postComment(req.params.userId, req.body);
   res.status(httpStatus.CREATED).send(comment);
@@ -19,26 +14,34 @@ const getComment = catchAsync(async (req, res) => {
 })
 
 const getCommentsByUserId = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['rating']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const result = await commentService.queryCommentsByUserId(req.params.userId, filter, options);
+  const result = await commentService.queryCommentsByUserId(req.params.userId);
   res.status(httpStatus.OK).send(result);
 })
 
 const updateComment = catchAsync(async (req, res) => {
-  const comment = await commentService.updateCommentById(req.params.commentId, req.body);
+  // get access token from headers
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+
+  const comment = await commentService.updateCommentById(accessTokenFromHeader, req.params.commentId, req.body);
   res.status(httpStatus.OK).send(comment);
 });
 
 const deleteComment = catchAsync(async (req, res) => {
-  await commentService.deleteCommentById(req.params.commentId);
+  // get access token from headers
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+
+  await commentService.deleteCommentById(accessTokenFromHeader, req.params.commentId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 const getReportedComments = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['rating']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const result = await commentService.queryReportedComments(filter, options);
+  const result = await commentService.queryReportedComments();
   res.status(httpStatus.OK).send(result);
 })
 

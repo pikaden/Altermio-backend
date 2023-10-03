@@ -22,15 +22,6 @@ const getCommentsByUserId = {
   }),
 };
 
-const getReportedComments = {
-  query: Joi.object().keys({
-    rating: Joi.number().integer(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
-  }),
-}
-
 const getComment = {
   params: Joi.object().keys({
     commentId: Joi.string().custom(objectId),
@@ -65,7 +56,6 @@ const patchReportComment = {
 module.exports = {
   postComment,
   getCommentsByUserId,
-  getReportedComments,
   getComment,
   updateComment,
   deleteComment,

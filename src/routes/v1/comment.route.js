@@ -6,30 +6,28 @@ const commentController = require('../../controllers/comment.controller');
 
 const router = express.Router();
 
+// role admin and moderator can delete reported comment, delete comment
+// role user can update, delete their own comment
+
 router
-  .route('/:userId')
+  .route('/user/:userId')
   // userId here can be sellerId or buyerId
   .get(validate(commentValidation.getCommentsByUserId), commentController.getCommentsByUserId)
   // userId here is buyerId
-  .post(validate(commentValidation.postComment), commentController.postComment)
+  .post(auth('postComment'), validate(commentValidation.postComment), commentController.postComment)
 
 router
   .route('/:commentId')
   .get(validate(commentValidation.getComment), commentController.getComment)
-  .patch(validate(commentValidation.updateComment), commentController.updateComment)
-  .delete(validate(commentValidation.deleteComment), commentController.deleteComment)
+  .patch(auth('updateComment'), validate(commentValidation.updateComment), commentController.updateComment)
+  .delete(auth('deleteComment'), validate(commentValidation.deleteComment), commentController.deleteComment)
 
 router
-  .route('/reportComments')
-  .get(validate(commentValidation.getReportedComments), commentController.getReportedComments)
+  .route('/reportComments/all')
+  .get(auth('manageReportedComments'), commentController.getReportedComments)
 
 router
   .route('/reportComments/:commentId/:type')
-  .patch(validate(commentValidation.patchReportComment), commentController.reportComment)
-  .put(validate(commentValidation.patchReportComment), commentController.denyReportedComment)
-
-  // .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  // .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
-  // .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
-
+  .patch(auth('reportComment'), validate(commentValidation.patchReportComment), commentController.reportComment)
+  .put(auth('manageReportedComments'), validate(commentValidation.patchReportComment), commentController.denyReportedComment)
 module.exports = router;
