@@ -1,3 +1,5 @@
+const { Image } = require("../models");
+
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
@@ -6,14 +8,57 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 
+/**
+ * Get file from user and upload to cloud
+ * @param {*} file 
+ * @returns 
+ */
 const handleUpload = async (file) => {
     const res = await cloudinary.uploader.upload(file, {
         folder: "Altermio",
         resource_type: "auto"
     });
-    return res.secure_url;
+    return res;
+}
+
+/**
+ * Create an image
+ * @param {String} public_id 
+ * @param {String} url 
+ * @returns 
+ */
+const handleImageUpload = async (public_id, url) => {
+    const image = await Image.create({
+        public_id: public_id,
+        url: url
+    });
+    return image;
+}
+
+/**
+ * Delete file on cloud
+ * @param {*} fileToDelete 
+ * @returns 
+ */
+const handleDelete = async (fileToDelete) => {
+    const res = await cloudinary.uploader.destroy(fileToDelete, (err, result) => {
+        console.log(result, err);
+    });
+    return res;
+}
+
+/**
+ * Get image by id
+ * @param {ObjectId} id 
+ * @returns {Promise<Image>}
+ */
+const getImageById = async (id) => {
+    return Image.findById(id);
 }
 
 module.exports = {
-    handleUpload
+    handleUpload,
+    handleImageUpload,
+    handleDelete,
+    getImageById
 }

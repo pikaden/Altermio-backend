@@ -113,66 +113,97 @@
 			"name": "image",
 			"item": [
 				{
-					"name": "post image",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "myFile",
-									"contentType": "multipart/form-data",
-									"type": "file",
-									"src": "/D:/WDP301/image/cay dua.jpg"
+					"name": "single file",
+					"item": [
+						{
+							"name": "post file",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "myFile",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/cay dua.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{localhost}}images/singleFile/upload",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"singleFile",
+										"upload"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{localhost}}images/uploadSingleFile",
-							"host": [
-								"{{localhost}}images"
-							],
-							"path": [
-								"uploadSingleFile"
-							]
+						{
+							"name": "delete file",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}images/singleFile/delete/{{imageId}}",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"singleFile",
+										"delete",
+										"{{imageId}}"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "post images",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "images",
-									"contentType": "multipart/form-data",
-									"type": "file",
-									"src": "/D:/WDP301/image/tree.jpg"
+					"name": "multiple files",
+					"item": [
+						{
+							"name": "post files",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/tree.jpg"
+										},
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/beach.jpg"
+										}
+									]
 								},
-								{
-									"key": "images",
-									"contentType": "multipart/form-data",
-									"type": "file",
-									"src": "/D:/WDP301/image/beach.jpg"
+								"url": {
+									"raw": "{{localhost}}images/multipleFiles/upload",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"multipleFiles",
+										"upload"
+									]
 								}
-							]
-						},
-						"url": {
-							"raw": "{{localhost}}images/uploadMultipleFiles",
-							"host": [
-								"{{localhost}}images"
-							],
-							"path": [
-								"uploadMultipleFiles"
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			]
 		},
@@ -441,6 +472,10 @@
 		{
 			"key": "accessToken",
 			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTFhODdlZWE0MjEwMzI0YzAzYTAwOTkiLCJpYXQiOjE2OTYyMzg1MzIsImV4cCI6MTY5NjI0MDMzMiwidHlwZSI6ImFjY2VzcyJ9.XY9PlsbpNke1iYNa82a3jBbJ1Krys4Mu78M6fxSmFs8"
+		},
+		{
+			"key": "imageId",
+			"value": "651b78f806797549fc7c7147"
 		}
 	]
 }
