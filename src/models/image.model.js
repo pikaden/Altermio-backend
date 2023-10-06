@@ -12,16 +12,16 @@ const imageSchema = mongoose.Schema({
 }, { timestamps: true }
 )
 
-// imageSchema.pre('remove', function (next) {
-//     const image = this;
-//     // Remove all the Product docs that reference the removed image.
-//     image.model('User').update(
-//         { images: image._id },
-//         { $pull: { images: image._id } },
-//         { multi: true },
-//         next
-//     );
-// })
+imageSchema.pre('remove', function (next) {
+    const image = this;
+    // Remove all the Product docs that reference the removed image.
+    image.model('Product').update(
+        { images: image._id },
+        { $pull: { images: image._id } },
+        { multi: true },
+        next
+    );
+})
 
 /**
  * @typedef Image

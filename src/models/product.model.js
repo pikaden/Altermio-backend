@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { toJSON, paginate } = require('./plugins');
 
 const productSchema = mongoose.Schema({
     sellerId: {
@@ -30,6 +31,10 @@ const productSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
     state: {
         type: String,
         required: true,
@@ -44,6 +49,10 @@ const productSchema = mongoose.Schema({
     }
 }, { timestamps: true }
 )
+
+// add plugin that converts mongoose to json
+productSchema.plugin(toJSON);
+productSchema.plugin(paginate);
 
 /**
  * @typedef Product

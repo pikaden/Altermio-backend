@@ -13,6 +13,10 @@ router
     .post(auth('uploadMultipleFiles'), imageController.handlerMultipleUploads);
 
 router
+    .route('/multipleFiles/delete')
+    .delete(auth('deleteMultipleFiles'), imageController.handlerDeleteMultipleFile);
+
+router
     .route('/singleFile/delete/:imageId')
     .delete(auth('deleteImage'), imageController.handlerDeleteSingleFile);
 
