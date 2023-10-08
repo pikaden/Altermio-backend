@@ -1,10 +1,13 @@
 // admin can change avatar => upload single file
 const allRoles = {
-  user: ['postComment', 'updateComment', 'deleteComment', 'reportComment', 'deleteImage', 'uploadSingleFile', 'uploadMultipleFiles'],
+  user: ['postComment', 'updateComment', 'deleteComment', 'reportComment', 'deleteImage', 'deleteMultipleFiles',
+    'uploadSingleFile', 'uploadMultipleFiles', 'createProduct', 'updateProduct', 'deleteProduct', 'reportProduct'],
   admin: ['getUsers', 'manageUsers', 'postComment', 'deleteComment',
-   'reportComment', 'manageReportedComments', 'deleteImage', 'uploadSingleFile'],
-  moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments', 'deleteImage', 'uploadSingleFile'],
-  courier: ['reportComment', 'deleteImage', 'uploadSingleFile', 'uploadMultipleFiles']
+    'reportComment', 'manageReportedComments', 'deleteImage', 'deleteMultipleFiles', 
+    'uploadSingleFile', 'deleteProduct', 'manageProducts', 'manageProductList'],
+  moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments', 'deleteImage',
+    'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct', 'manageProducts'],
+  courier: ['reportComment', 'deleteImage', 'deleteMultipleFiles', 'uploadSingleFile', 'uploadMultipleFiles']
 };
 
 const roles = Object.keys(allRoles);

@@ -4,6 +4,8 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
+const productList = require('./productList.route');
+const productRoute = require('./product.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -24,6 +26,14 @@ const defaultRoutes = [
   {
     path: '/comments',
     route: commentRoute
+  },
+  {
+    path: '/productLists',
+    route: productList
+  },
+  {
+    path: '/products',
+    route: productRoute
   }
 ];
 

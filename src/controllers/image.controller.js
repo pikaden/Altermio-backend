@@ -1,4 +1,4 @@
-const { handleUpload } = require('../services/image.service');
+const { handleUpload, handleDelete } = require('../services/image.service');
 const httpStatus = require('http-status');
 const { uploadFileMiddleware, singleUploadMiddleware, multipleUploadsMiddleware } = require('../middlewares/uploadFile');
 const { imageService } = require('../services');
@@ -50,14 +50,26 @@ const handlerMultipleUploads = async (req, res) => {
 
 const handlerDeleteSingleFile = async (req, res) => {
     try {
-        // get imageId => search image => get public_id => delete on cloud
         const imageId = req.params.imageId;
-        const image = await imageService.getImageById(imageId);
-        await imageService.handleDelete(image.public_id);
+        await imageService.handleDelete(imageId);
+        res.status(httpStatus.NO_CONTENT).send();
+    } catch (error) {
+        console.log(error);
+        res.status(httpStatus.NO_CONTENT).send({
+            message: error.message,
+        });
+    }
+}
 
-        // delete on server
-        // TODO: also delete reference in User (single => User, multiple => Product)
-        await image.remove();
+const handlerDeleteMultipleFile = async (req, res) => {
+    try {
+        // get imageId => search image => get public_id => delete on cloud
+        const imageList = req.body.images;
+
+        // map through images and create a promise array using cloudinary delete function
+        await Promise.all(imageList.map(async (imageId) => {
+            await imageService.handleDelete(imageId);
+        }));
         res.status(httpStatus.NO_CONTENT).send();
     } catch (error) {
         console.log(error);
@@ -77,5 +89,6 @@ module.exports = {
     config,
     handlerSingleUpload,
     handlerMultipleUploads,
-    handlerDeleteSingleFile
+    handlerDeleteSingleFile,
+    handlerDeleteMultipleFile
 };
