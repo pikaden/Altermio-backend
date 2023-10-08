@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { activateStatus } = require('../config/activate');
 
 const productSchema = mongoose.Schema({
     sellerId: {
@@ -27,13 +28,15 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Image'
     }],
-    isVerified: {
-        type: Boolean,
-        default: false
+    verify: {
+        type: String,
+        enum: activateStatus,
+        default: 'deny'
     },
-    isActive: {
-        type: Boolean,
-        default: true
+    activate: {
+        type: String,
+        enum: activateStatus,
+        default: 'accept'
     },
     state: {
         type: String,

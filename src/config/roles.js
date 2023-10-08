@@ -1,11 +1,12 @@
 // admin can change avatar => upload single file
 const allRoles = {
   user: ['postComment', 'updateComment', 'deleteComment', 'reportComment', 'deleteImage', 'deleteMultipleFiles',
-    'uploadSingleFile', 'uploadMultipleFiles', 'createProduct', 'updateProduct', 'deleteProduct'],
+    'uploadSingleFile', 'uploadMultipleFiles', 'createProduct', 'updateProduct', 'deleteProduct', 'reportProduct'],
   admin: ['getUsers', 'manageUsers', 'postComment', 'deleteComment',
-    'reportComment', 'manageReportedComments', 'deleteImage', 'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct'],
+    'reportComment', 'manageReportedComments', 'deleteImage', 'deleteMultipleFiles', 
+    'uploadSingleFile', 'deleteProduct', 'manageProducts'],
   moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments', 'deleteImage',
-    'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct'],
+    'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct', 'manageProducts'],
   courier: ['reportComment', 'deleteImage', 'deleteMultipleFiles', 'uploadSingleFile', 'uploadMultipleFiles']
 };
 

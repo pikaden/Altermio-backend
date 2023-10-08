@@ -51,10 +51,44 @@ const deleteProduct = {
   }),
 };
 
+const getManagedProducts = {
+  query: Joi.object().keys({
+    verified: Joi.string(),
+    activate: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
+const reportProduct = {
+  params: Joi.object().keys({
+    productId: Joi.string().custom(objectId),
+  }),
+};
+
+const acceptReportedProduct = {
+  params: Joi.object().keys({
+    productId: Joi.string().custom(objectId),
+    type: Joi.string().required()
+  }),
+};
+
+const denyReportedProduct = {
+  params: Joi.object().keys({
+    productId: Joi.string().custom(objectId),
+    type: Joi.string().required()
+  }),
+};
+
 module.exports = {
   createProduct,
   getProducts,
   getProduct,
   updateProduct,
   deleteProduct,
+  getManagedProducts,
+  reportProduct,
+  acceptReportedProduct,
+  denyReportedProduct
 };

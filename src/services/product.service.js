@@ -6,6 +6,7 @@ const config = require('../config/config');
 const { uploadFileMiddleware, multipleUploadsMiddleware } = require('../middlewares/uploadFile');
 const { imageService, userService } = require('.');
 const { handleUpload } = require('./image.service');
+const { activateStatus } = require('../config/activate');
 
 /**
  * Create a product
@@ -135,11 +136,176 @@ const handlerMultipleUploadsProductImages = async (req, res) => {
     }
 }
 
+/**
+ * Query for products
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const queryManagedProducts = async (filter, options) => {
+    const products = await Product.paginate(filter, options);
+    return products;
+};
+
+// report -> product.activate = pending,
+// accept -> product.activate = accept, button accept -> product is deactive
+// deny -> product.activate = deny, button deny -> product is active
+
+/**
+ * report product from user to moderator and admin
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const reportProduct = async (productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.activate == activateStatus.PENDING) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product has been reported');
+    }
+
+    product.activate = activateStatus.PENDING;
+    await product.save();
+    return product;
+}
+
+/**
+ * accept report product, meaning that product is deactivated
+ * @param {string} type 
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const acceptReportedProduct = async (type, productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.activate == activateStatus.DENY) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product has already been deactivated');
+    }
+    if (type != activateStatus.ACCEPT) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Type report is not right');
+    }
+
+    product.activate = activateStatus.DENY;
+    await product.save();
+    return product;
+}
+
+/**
+ * deny report product, meaning that product is activated again
+ * @param {string} type 
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const denyReportedProduct = async (type, productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.activate == activateStatus.ACCEPT) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product has already been activated');
+    }
+    if (type != activateStatus.DENY) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Type report is not right');
+    }
+
+    product.activate = activateStatus.ACCEPT;
+    await product.save();
+    return product;
+}
+
+// request verify -> product.verify = pending,
+// accept -> product.verify = accept, button accept -> product is verified (accept)
+// deny -> product.verify = deny, button deny -> product is not verified (deny)
+
+/**
+ * request verify product from user to moderator and admin
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const requestVerifyProduct = async (productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.verify == activateStatus.PENDING) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product has been reported');
+    }
+
+    product.verify = activateStatus.PENDING;
+    await product.save();
+    return product;
+}
+
+/**
+ * accept verify product request, meaning that product is verified
+ * @param {string} type 
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const acceptVerifyProduct = async (type, productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.verify == activateStatus.ACCEPT) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product verify request has already been accepted');
+    }
+    if (type != activateStatus.ACCEPT) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Type is not right');
+    }
+
+    product.verify = activateStatus.ACCEPT;
+    await product.save();
+    return product;
+}
+
+/**
+ * deny verify product request, meaning that product is not verified again
+ * @param {string} type 
+ * @param {ObjectId} productId 
+ * @returns {Promise<product>}
+ */
+const denyVerifyProduct = async (type, productId) => {
+    const product = await getProductById(productId);
+
+    if (!product) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
+    }
+    if (product.verify == activateStatus.DENY) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'product verify request has already been denied');
+    }
+    if (type != activateStatus.DENY) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Type is not right');
+    }
+
+    product.verify = activateStatus.DENY;
+    await product.save();
+    return product;
+}
+
 module.exports = {
     createProduct,
     queryProducts,
     getProductById,
     updateProductById,
     deleteProductById,
-    handlerMultipleUploadsProductImages
+    handlerMultipleUploadsProductImages,
+    queryManagedProducts,
+    reportProduct,
+    acceptReportedProduct,
+    denyReportedProduct,
+    requestVerifyProduct,
+    acceptVerifyProduct,
+    denyVerifyProduct
 };

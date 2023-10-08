@@ -66,10 +66,54 @@ const deleteProduct = catchAsync(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
+const getManagedProducts = catchAsync(async (req, res) => {
+    const filter = pick(req.query, ['verified', 'activate']);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const result = await productService.queryManagedProducts(filter, options);
+    res.status(httpStatus.OK).send(result);
+})
+
+const reportProduct = catchAsync(async (req, res) => {
+    const reportProduct = await productService.reportProduct(req.params.productId);
+    res.status(httpStatus.OK).send(reportProduct);
+});
+
+const acceptReportedProduct = catchAsync(async (req, res) => {
+    const acceptReportedProduct = await productService.acceptReportedProduct(req.params.type, req.params.productId);
+    res.status(httpStatus.OK).send(acceptReportedProduct);
+})
+
+const denyReportedProduct = catchAsync(async (req, res) => {
+    const denyReportedProduct = await productService.denyReportedProduct(req.params.type, req.params.productId);
+    res.status(httpStatus.OK).send(denyReportedProduct);
+})
+
+const requestVerifyProduct = catchAsync(async (req, res) => {
+    const requestVerifyProduct = await productService.requestVerifyProduct(req.params.productId);
+    res.status(httpStatus.OK).send(requestVerifyProduct);
+});
+
+const acceptVerifyProduct = catchAsync(async (req, res) => {
+    const acceptVerifyProduct = await productService.acceptVerifyProduct(req.params.type, req.params.productId);
+    res.status(httpStatus.OK).send(acceptVerifyProduct);
+})
+
+const denyVerifyProduct = catchAsync(async (req, res) => {
+    const denyVerifyProduct = await productService.denyVerifyProduct(req.params.type, req.params.productId);
+    res.status(httpStatus.OK).send(denyVerifyProduct);
+})
+
 module.exports = {
     createProduct,
     getProducts,
     getProduct,
     updateProduct,
     deleteProduct,
+    getManagedProducts,
+    reportProduct,
+    acceptReportedProduct,
+    denyReportedProduct,
+    requestVerifyProduct,
+    acceptVerifyProduct,
+    denyVerifyProduct
 };
