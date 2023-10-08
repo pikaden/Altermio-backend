@@ -4,7 +4,7 @@ const allRoles = {
     'uploadSingleFile', 'uploadMultipleFiles', 'createProduct', 'updateProduct', 'deleteProduct', 'reportProduct'],
   admin: ['getUsers', 'manageUsers', 'postComment', 'deleteComment',
     'reportComment', 'manageReportedComments', 'deleteImage', 'deleteMultipleFiles', 
-    'uploadSingleFile', 'deleteProduct', 'manageProducts'],
+    'uploadSingleFile', 'deleteProduct', 'manageProducts', 'manageProductList'],
   moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments', 'deleteImage',
     'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct', 'manageProducts'],
   courier: ['reportComment', 'deleteImage', 'deleteMultipleFiles', 'uploadSingleFile', 'uploadMultipleFiles']
