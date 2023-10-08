@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Product, Image } = require('../models');
+const { Product, Image, ProductList } = require('../models');
 const ApiError = require('../utils/ApiError');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
@@ -9,7 +9,7 @@ const { handleUpload } = require('./image.service');
 const { activateStatus } = require('../config/activate');
 
 /**
- * Create a product
+ * Create a product, and add product to productList
  * @param {Object} productBody
  * @returns {Promise<Product>}
  */
@@ -20,7 +20,23 @@ const createProduct = async (accessTokenFromHeader, imageList, productBody) => {
 
     productBody.sellerId = userId;
     productBody.images = imageList;
-    return Product.create(productBody);
+
+    const productListCategory = productBody.productListCategory;
+    productBody.productListCategory = undefined;
+    const product = await Product.create(productBody);
+
+    // add to product list
+    await ProductList.findOneAndUpdate(
+        { 'categoryName': productListCategory },
+        { $addToSet: { 'products': product.id } },
+        function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(success);
+            }
+        });
+    return product;
 };
 
 /**

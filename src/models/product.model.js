@@ -57,6 +57,17 @@ const productSchema = mongoose.Schema({
 productSchema.plugin(toJSON);
 productSchema.plugin(paginate);
 
+productSchema.pre('remove', function (next) {
+    const product = this;
+    // Remove all the productList docs that reference the removed product.
+    product.model('ProductList').update(
+        { products: product._id },
+        { $pull: { products: product._id } },
+        { multi: true },
+        next
+    );
+})
+
 /**
  * @typedef Product
  */

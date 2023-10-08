@@ -2,13 +2,13 @@ const Joi = require('joi');
 const { password, objectId } = require('./custom.validation');
 
 const createProduct = {
-  body: Joi.object().keys({
+  FormData: Joi.object().keys({
     name: Joi.string().required(),
     category: Joi.string().required(),
     price: Joi.number(),
     description: Joi.string().required(),
     state: Joi.string().required(),
-    brand: Joi.string().required()
+    brand: Joi.string().required(),
   }),
 };
 
