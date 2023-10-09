@@ -35,15 +35,30 @@ const handleImageUpload = async (public_id, url) => {
     return image;
 }
 
+// /**
+//  * Delete file on cloud
+//  * @param {*} fileToDelete 
+//  * @returns 
+//  */
+// const handleDelete = async (fileToDelete) => {
+//     const res = await cloudinary.uploader.destroy(fileToDelete, (err, result) => {
+//         console.log(result, err);
+//     });
+//     return res;
+// }
+
 /**
- * Delete file on cloud
- * @param {*} fileToDelete 
+ * Delete file on cloudinary, 
+ * then delete on database
+ * @param {*} imageId 
  * @returns 
  */
-const handleDelete = async (fileToDelete) => {
-    const res = await cloudinary.uploader.destroy(fileToDelete, (err, result) => {
+const handleDelete = async (imageId) => {
+    const image = await getImageById(imageId);
+    const res = await cloudinary.uploader.destroy(image.public_id, (err, result) => {
         console.log(result, err);
     });
+    await image.remove();
     return res;
 }
 

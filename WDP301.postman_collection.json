@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"\",\r\n    \"avatar\": \"651145b56b242d4ba1411f63\",\r\n    \"phoneNumber\": 1234567891\r\n}",
+							"raw": "{\r\n    \"email\": \"test1@gmail.com\",\r\n    \"password\": \"password1\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"address\": \"Urban area FPT City, Ngu Hanh Son, Da Nang 550000, Vietnam\",\r\n    \"phoneNumber\": 1234567891\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -49,7 +49,8 @@
 									"\r",
 									"const res = pm.response.json(); \r",
 									"\r",
-									"pm.collectionVariables.set(\"accessToken\", res.tokens.access.token);"
+									"pm.collectionVariables.set(\"accessToken\", res.tokens.access.token);\r",
+									"pm.collectionVariables.set(\"refreshToken\", res.tokens.refresh.token);"
 								],
 								"type": "text/javascript"
 							}
@@ -60,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -87,7 +88,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTExNDVjNmJlY2NjZTJmMThiYzg3MGYiLCJpYXQiOjE2OTU2MzA5OTksImV4cCI6MTY5ODIyMjk5OSwidHlwZSI6InJlZnJlc2gifQ.gUsXtrUFHYwbWKdbJeclyZPiQVyrY_0Z-gus4ND1mX8\"\r\n}",
+							"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -198,6 +199,34 @@
 									"path": [
 										"multipleFiles",
 										"upload"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete files",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"images\": [\r\n        \"651bd443ff494d19345673b4\",\r\n        \"651bea26da87473f38059753\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}images/multipleFiles/delete/",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"multipleFiles",
+										"delete",
+										""
 									]
 								}
 							},
@@ -401,7 +430,7 @@
 			]
 		},
 		{
-			"name": "user",
+			"name": "user (admin only)",
 			"item": [
 				{
 					"name": "get users",
@@ -422,6 +451,463 @@
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "all products",
+					"item": [
+						{
+							"name": "get all products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products?name=Iphone 15",
+									"host": [
+										"{{localhost}}products"
+									],
+									"query": [
+										{
+											"key": "price",
+											"value": "30000",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "Iphone 15"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Iphone 11",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "Smartphone",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "30000",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "good phone on the way",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "state",
+											"value": "like new 99%",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "brand",
+											"value": "Apple",
+											"contentType": "",
+											"type": "text"
+										},
+										{
+											"key": "productListCategory",
+											"value": "Iphone",
+											"type": "text"
+										},
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/cay dua.jpg"
+										},
+										{
+											"key": "images",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/D:/WDP301/image/beach.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{localhost}}products",
+									"host": [
+										"{{localhost}}products"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "specific product",
+					"item": [
+						{
+							"name": "get specific product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/{{productId}}",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update product",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Iphone 11\",\r\n    \"category\": \"Smartphone\",\r\n    \"price\": \"30000\",\r\n    \"description\": \"good phone on the way\",\r\n    \"state\": \"like new 99%\",\r\n    \"brand\": \"Apple\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}products/{{productId}}",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete product",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}products/{{productId}}",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report product",
+					"item": [
+						{
+							"name": "report product",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/reportProducts/{{productId}}",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"reportProducts",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "accept deactivate reported product",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/manageReportedProducts/{{productId}}/accept",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"manageReportedProducts",
+										"{{productId}}",
+										"accept"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deny deactivate reported product",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/manageReportedProducts/{{productId}}/deny",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"manageReportedProducts",
+										"{{productId}}",
+										"deny"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "manage products (mod + admin)",
+					"item": [
+						{
+							"name": "get all products with query",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/manageProducts/all?verified=deny&activate=pending",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"manageProducts",
+										"all"
+									],
+									"query": [
+										{
+											"key": "verified",
+											"value": "deny"
+										},
+										{
+											"key": "activate",
+											"value": "pending"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "verify product",
+					"item": [
+						{
+							"name": "request verify product",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/requestVerifyProduct/{{productId}}",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"requestVerifyProduct",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "accept request",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/manageVerifyProducts/{{productId}}/accept",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"manageVerifyProducts",
+										"{{productId}}",
+										"accept"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deny request",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/manageVerifyProducts/{{productId}}/deny",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"manageVerifyProducts",
+										"{{productId}}",
+										"deny"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "product list",
+			"item": [
+				{
+					"name": "all product lists",
+					"item": [
+						{
+							"name": "get product lists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}productLists",
+									"host": [
+										"{{localhost}}productLists"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create product list",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categoryName\": \"testing 10\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}productLists",
+									"host": [
+										"{{localhost}}productLists"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "specific product list",
+					"item": [
+						{
+							"name": "get specific product list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}productLists/{{productListId}}",
+									"host": [
+										"{{localhost}}productLists"
+									],
+									"path": [
+										"{{productListId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update product list",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categoryName\": \"aaaa\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}productLists/{{productListId}}",
+									"host": [
+										"{{localhost}}productLists"
+									],
+									"path": [
+										"{{productListId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete product list",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}productLists/{{productListId}}",
+									"host": [
+										"{{localhost}}productLists"
+									],
+									"path": [
+										"{{productListId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
@@ -476,6 +962,19 @@
 		{
 			"key": "imageId",
 			"value": "651b78f806797549fc7c7147"
+		},
+		{
+			"key": "productId",
+			"value": "651454f9f31b262156eb3a3d"
+		},
+		{
+			"key": "refreshToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTFhODdlZWE0MjEwMzI0YzAzYTAwOTkiLCJpYXQiOjE2OTY3NzUwNjcsImV4cCI6MTY5OTM2NzA2NywidHlwZSI6InJlZnJlc2gifQ.YoewBatXkvY2jEUFufK9M-3o3orFLo3i2-W_u4VIXFM",
+			"type": "string"
+		},
+		{
+			"key": "productListId",
+			"value": "6522bbdb5856a6160c97944f"
 		}
 	]
 }

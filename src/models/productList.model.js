@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const productListSchema = mongoose.Schema({
-    sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    },
     categoryName: {
         type: String,
         required: true
@@ -16,6 +11,23 @@ const productListSchema = mongoose.Schema({
     }]
 }, { timestamps: true }
 )
+
+productListSchema.pre('remove', async function (next) {
+    const oldProductList = this;
+
+    // push products in old product list to new product list named 'Other'
+    ProductList.findOneAndUpdate(
+        { 'categoryName': 'Other' },
+        { $push: { 'products': oldProductList.products } },
+        function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(success);
+            }
+        });
+    next();
+})
 
 /**
  * @typedef ProductList

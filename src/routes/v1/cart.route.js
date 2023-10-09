@@ -5,10 +5,13 @@ const cartController = require ("../../controllers/cart.controller")
 const router = express.Router();
 
 router
-  .route('/user/:userId')
+  .route('/')
   // userId here can be sellerId or buyerId
   .get(cartController.getCartByUserId)
   .post(cartController.addToCart)
-  
+  .delete(cartController.removeFromCart);
+router
+  .route('/clear')
+  .delete(cartController.clearCart);
 
 module.exports = router;
