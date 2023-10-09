@@ -4,6 +4,7 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
+const cartRoute = require('./cart.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -19,12 +20,16 @@ const defaultRoutes = [
   },
   {
     path: '/images',
-    route: imageRoute
+    route: imageRoute,
   },
   {
     path: '/comments',
-    route: commentRoute
-  }
+    route: commentRoute,
+  },
+  {
+    path: '/cart',
+    route: cartRoute,
+  },
 ];
 
 const devRoutes = [
