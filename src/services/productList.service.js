@@ -33,6 +33,15 @@ const getProductListById = async (id) => {
 };
 
 /**
+ * get product list by name
+ * @param {String} productListName 
+ * @returns {Promise<ProductList>}
+ */
+const getProductListByName = async (productListName) => {
+    return ProductList.findOne({ categoryName: productListName })
+}
+
+/**
  * Update productList by id
  * @param {ObjectId} productListId
  * @param {Object} updateBody
@@ -66,6 +75,7 @@ module.exports = {
     createProductList,
     queryProductList,
     getProductListById,
+    getProductListByName,
     updateProductListById,
     deleteProductListById
 };
