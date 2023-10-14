@@ -22,6 +22,14 @@ const getProductList = catchAsync(async (req, res) => {
     res.send(productList);
 });
 
+const getProductListByName = catchAsync(async (req, res) => {
+    const productList = await productListService.getProductListByName(req.params.productListName);
+    if (!productList) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'product list not found');
+    }
+    res.send(productList);
+});
+
 const updateProductList = catchAsync(async (req, res) => {
     const productList = await productListService.updateProductListById(req.params.productListId, req.body);
     res.send(productList);
@@ -36,6 +44,7 @@ module.exports = {
     createProductList,
     getProductLists,
     getProductList,
+    getProductListByName,
     updateProductList,
     deleteProductList
 };

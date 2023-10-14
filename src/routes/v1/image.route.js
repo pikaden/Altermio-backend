@@ -5,6 +5,10 @@ const imageController = require('../../controllers/image.controller');
 const router = express.Router();
 
 router
+    .route('/:imageId')
+    .get(imageController.getImageById)
+
+router
     .route('/singleFile/upload')
     .post(auth('uploadSingleFile'), imageController.handlerSingleUpload);
 

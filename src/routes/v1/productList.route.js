@@ -21,4 +21,8 @@ router
     .patch(auth('manageProductList'), validate(productListValidation.updateProductList), productListController.updateProductList)
     .delete(auth('manageProductList'), validate(productListValidation.deleteProductList), productListController.deleteProductList)
 
+router
+    .route('/productListName/:productListName')
+    .get(validate(productListValidation.getProductListByName), productListController.getProductListByName)
+
 module.exports = router;

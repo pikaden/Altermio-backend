@@ -61,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -116,6 +116,23 @@
 				{
 					"name": "single file",
 					"item": [
+						{
+							"name": "get image by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}images/{{imageId}}",
+									"host": [
+										"{{localhost}}images"
+									],
+									"path": [
+										"{{imageId}}"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "post file",
 							"request": {
@@ -865,6 +882,24 @@
 							"response": []
 						},
 						{
+							"name": "get product list by name",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}productLists/productListName/{{productListName}}",
+									"host": [
+										"{{localhost}}productLists"
+									],
+									"path": [
+										"productListName",
+										"{{productListName}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "update product list",
 							"request": {
 								"method": "PATCH",
@@ -975,6 +1010,10 @@
 		{
 			"key": "productListId",
 			"value": "6522bbdb5856a6160c97944f"
+		},
+		{
+			"key": "productListName",
+			"value": "Other"
 		}
 	]
 }
