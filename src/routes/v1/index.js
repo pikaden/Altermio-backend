@@ -6,6 +6,7 @@ const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
 const productList = require('./productList.route');
 const productRoute = require('./product.route');
+const notificationRoute = require('./notification.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -21,20 +22,24 @@ const defaultRoutes = [
   },
   {
     path: '/images',
-    route: imageRoute
+    route: imageRoute,
   },
   {
     path: '/comments',
-    route: commentRoute
+    route: commentRoute,
   },
   {
     path: '/productLists',
-    route: productList
+    route: productList,
   },
   {
     path: '/products',
-    route: productRoute
-  }
+    route: productRoute,
+  },
+  {
+    path: '/notifications',
+    route: notificationRoute,
+  },
 ];
 
 const devRoutes = [
