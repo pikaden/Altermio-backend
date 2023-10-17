@@ -6,6 +6,7 @@ const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
 const productList = require('./productList.route');
 const productRoute = require('./product.route');
+const walletRoute = require('./wallet.route')
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -34,6 +35,10 @@ const defaultRoutes = [
   {
     path: '/products',
     route: productRoute
+  },
+  {
+    path: '/wallets',
+    route: walletRoute
   }
 ];
 
