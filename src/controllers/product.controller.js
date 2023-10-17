@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { productService } = require('../services');
+const { productService, productListService } = require('../services');
 
 const createProduct = catchAsync(async (req, res) => {
     try {
@@ -18,6 +18,16 @@ const createProduct = catchAsync(async (req, res) => {
         // then save returned image id and public_id,
         // then create product with other text field in productBody
         const imageList = await productService.handlerMultipleUploadsProductImages(req, res);
+
+        const productListId = req.body.productListId;
+
+        // check product list exist
+        const productList = await productListService.getProductListById(productListId);
+
+        if (!productList) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'Product list not found');
+        }
+        
         const product = await productService.createProduct(accessTokenFromHeader, imageList, req.body);
         res.status(httpStatus.CREATED).send(product);
     } catch (error) {
@@ -29,7 +39,7 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 const getProducts = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['category', 'state', 'brand']);
+    const filter = pick(req.query, ['category', 'brand']);
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
     const result = await productService.queryProducts(filter, options);
     res.send(result);
