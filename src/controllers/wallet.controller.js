@@ -10,7 +10,11 @@ const getWalletByUserId = catchAsync(async (req, res) => {
 });
 
 const addBalance = catchAsync(async (req, res) => {
-  const wallet = await walletService.addBalanceByBank(req, res)
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+  const wallet = await walletService.addBalanceByBank(accessTokenFromHeader, req, res)
   res.status(httpStatus.OK).send(wallet)
 })
 

@@ -5,7 +5,9 @@ const request = require('request');
 const moment = require('moment');
 const ApiError = require('../utils/ApiError');
 const { Wallet } = require('../models');
-const config = require('../config/default.json');
+const jwt = require('jsonwebtoken');
+const configVNP = require('../config/default.json');
+const config = require('../config/config');
 
 const createWallet = async (userId) => {
   return Wallet.create({ coin: '0', userId: userId });
@@ -27,7 +29,11 @@ const addBalance = async (userId, amount) => {
   return wallet;
 };
 
-const addBalanceByBank = async (req, res) => {
+const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
+
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+  
   process.env.TZ = 'Asia/Ho_Chi_Minh';
 
   let date = new Date();
@@ -39,10 +45,10 @@ const addBalanceByBank = async (req, res) => {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 
-  let tmnCode = config.vnp_TmnCode;
-  let secretKey = config.vnp_HashSecret;
-  let vnpUrl = config.vnp_Url;
-  let returnUrl = config.vnp_ReturnUrl;
+  let tmnCode = configVNP.vnp_TmnCode;
+  let secretKey = configVNP.vnp_HashSecret;
+  let vnpUrl = configVNP.vnp_Url;
+  let returnUrl = configVNP.vnp_ReturnUrl;
 
   let orderId = moment(date).format('DDHHmmss');
   let amount = req.body.amount;
@@ -60,7 +66,7 @@ const addBalanceByBank = async (req, res) => {
   vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
   vnp_Params['vnp_OrderType'] = 'other';
   vnp_Params['vnp_Amount'] = amount * 100;
-  vnp_Params['vnp_ReturnUrl'] = returnUrl;
+  vnp_Params['vnp_ReturnUrl'] = returnUrl+`/${userId}`;
   vnp_Params['vnp_IpAddr'] = ipAddr;
   vnp_Params['vnp_CreateDate'] = createDate;
   if (bankCode !== null && bankCode !== '') {
@@ -82,10 +88,12 @@ const addBalanceByBank = async (req, res) => {
 };
 
 const returnIpn = async (req, res) => {
-  // let config = require('config');
+
+  const userId = req.params.userId
+
   let vnp_Params = req.query;
   let secureHash = vnp_Params['vnp_SecureHash'];
-  let secretKey = config.vnp_HashSecret;
+  let secretKey = configVNP.vnp_HashSecret;
   let orderId = vnp_Params['vnp_TxnRef'];
   let rspCode = vnp_Params['vnp_ResponseCode'];
 
@@ -114,9 +122,8 @@ const returnIpn = async (req, res) => {
           //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
           if (rspCode == '00') {
             // get user ID by token right here
-            const userId = '652a544057fd9e77a0f7c86d';
 
-            const wallet = addBalance(userId, vnp_Params.vnp_Amount);
+            const wallet = addBalance(userId, vnp_Params.vnp_Amount/100);
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           } else {
             //that bai
@@ -140,6 +147,8 @@ const returnIpn = async (req, res) => {
     res.status(200).json({ RspCode: '97', Message: 'Checksum failed' });
   }
 };
+
+
 
 function sortObject(obj) {
   let sorted = {};
