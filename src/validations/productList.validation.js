@@ -13,6 +13,12 @@ const getProductList = {
     }),
 };
 
+const getProductListByName = {
+    params: Joi.object().keys({
+        productListName: Joi.string().required(),
+    }),
+};
+
 const updateProductList = {
     params: Joi.object().keys({
         productListId: Joi.required().custom(objectId),
@@ -33,6 +39,7 @@ const deleteProductList = {
 module.exports = {
     createProductList,
     getProductList,
+    getProductListByName,
     updateProductList,
     deleteProductList,
 };
