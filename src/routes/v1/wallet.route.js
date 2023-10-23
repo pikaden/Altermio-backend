@@ -11,6 +11,6 @@ router.route('/payment')
 
 router.route('/vnpayIpn/:userId').get(walletController.returnIpn);
 
-router.route('/createwallet/:userId').post(walletController.createWallet);
+// router.route('/createwallet/:userId').post(walletController.createWallet);
 
 module.exports = router;

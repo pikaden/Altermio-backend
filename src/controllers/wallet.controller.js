@@ -23,13 +23,13 @@ const returnIpn = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send(wallet)
 })
 
-const createWallet = catchAsync(async (req, res) => {
-  const wallet = await walletService.createWallet(req.params.userId)
-  res.status(httpStatus.OK).send(wallet)
-})
+// const createWallet = catchAsync(async (req, res) => {
+//   const wallet = await walletService.createWallet(req.params.userId)
+//   res.status(httpStatus.OK).send(wallet)
+// })
 
 module.exports = {
-  createWallet,
+  // createWallet,
   getWalletByUserId,
   addBalance,
   returnIpn,
