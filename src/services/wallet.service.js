@@ -13,27 +13,55 @@ const createWallet = async (userId) => {
   return Wallet.create({ coin: '0', userId: userId });
 };
 
+const claimMoneyById = async(accessTokenFromHeader, req, res) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const sellerId = payload.sub;
+  const sellerWallet = await getWalletById(sellerId);
+  const amount = req.body.amount;
+  const increaseSeller = {
+    $inc: {
+      coin: amount,
+    },
+  };
+  return increateSellerBalance = await Wallet.findByIdAndUpdate({ _id: sellerWallet._id }, increaseSeller);
+}
+
+const transferMoneyById = async (accessTokenFromHeader, req, res) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const buyerId = payload.sub;
+  const amount = req.body.amount;
+  const buyerWallet = await getWalletById(buyerId);
+  if (buyerWallet.coin < amount) {
+    res.status(400).json({ message: 'Insufficient balance' });
+    return;
+  }
+  const subtractBuyer = {
+    $inc: {
+      coin: -amount,
+    },
+  };
+  return (subtractBuyerBalance = await Wallet.findByIdAndUpdate({ _id: buyerWallet._id }, subtractBuyer));
+};
+
 const getWalletById = async (userId) => {
   return Wallet.findOne({ userId: userId });
 };
 
 const addBalance = async (userId, amount) => {
-  console.log(userId, amount);
-  const userCoin = await getWalletById(userId);
+  const userWallet = await getWalletById(userId);
   const update = {
     $inc: {
       coin: amount,
     },
   };
-  const wallet = await Wallet.findByIdAndUpdate({ _id: userCoin._id }, update);
+  const wallet = await Wallet.findByIdAndUpdate({ _id: userWallet._id }, update);
   return wallet;
 };
 
 const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
-
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
   const userId = payload.sub;
-  
+
   process.env.TZ = 'Asia/Ho_Chi_Minh';
 
   let date = new Date();
@@ -66,7 +94,7 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
   vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
   vnp_Params['vnp_OrderType'] = 'other';
   vnp_Params['vnp_Amount'] = amount * 100;
-  vnp_Params['vnp_ReturnUrl'] = returnUrl+`/${userId}`;
+  vnp_Params['vnp_ReturnUrl'] = returnUrl + `/${userId}`;
   vnp_Params['vnp_IpAddr'] = ipAddr;
   vnp_Params['vnp_CreateDate'] = createDate;
   if (bankCode !== null && bankCode !== '') {
@@ -88,8 +116,7 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
 };
 
 const returnIpn = async (req, res) => {
-
-  const userId = req.params.userId
+  const userId = req.params.userId;
 
   let vnp_Params = req.query;
   let secureHash = vnp_Params['vnp_SecureHash'];
@@ -123,7 +150,7 @@ const returnIpn = async (req, res) => {
           if (rspCode == '00') {
             // get user ID by token right here
 
-            const wallet = addBalance(userId, vnp_Params.vnp_Amount/100);
+            const wallet = addBalance(userId, vnp_Params.vnp_Amount / 100);
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           } else {
             //that bai
@@ -148,8 +175,6 @@ const returnIpn = async (req, res) => {
   }
 };
 
-
-
 function sortObject(obj) {
   let sorted = {};
   let str = [];
@@ -170,6 +195,8 @@ module.exports = {
   createWallet,
   getWalletById,
   addBalance,
+  transferMoneyById,
+  claimMoneyById,
   addBalanceByBank,
   returnIpn,
 };
