@@ -3,6 +3,19 @@ const httpStatus = require('http-status');
 const { uploadFileMiddleware, singleUploadMiddleware, multipleUploadsMiddleware } = require('../middlewares/uploadFile');
 const { imageService } = require('../services');
 
+const getImageById = async (req, res) => {
+    try {
+        const imageId = req.params.imageId;
+        const imageUrl = await imageService.getImageById(imageId);
+        res.status(httpStatus.OK).json({ image: imageUrl });
+    } catch (error) {
+        console.log(error);
+        res.status(httpStatus.NO_CONTENT).send({
+            message: error.message,
+        });
+    }
+}
+
 const handlerSingleUpload = async (req, res) => {
     try {
         await uploadFileMiddleware(req, res, singleUploadMiddleware);
@@ -87,6 +100,7 @@ const config = {
 
 module.exports = {
     config,
+    getImageById,
     handlerSingleUpload,
     handlerMultipleUploads,
     handlerDeleteSingleFile,

@@ -16,9 +16,13 @@ router
     .get(productListController.getProductLists);
 
 router
-    .route('/:productListId')
-    .get(validate(productListValidation.getProductList), productListController.getProductList)
+    .route('/manage/:productListId')
+    .get(validate(productListValidation.getProductList), productListController.getProductsByProductListId)
     .patch(auth('manageProductList'), validate(productListValidation.updateProductList), productListController.updateProductList)
     .delete(auth('manageProductList'), validate(productListValidation.deleteProductList), productListController.deleteProductList)
+
+router
+    .route('/:productListName')
+    .get(validate(productListValidation.getProductListByName), productListController.getProductListByName)
 
 module.exports = router;
