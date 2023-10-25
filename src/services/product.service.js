@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const httpStatus = require('http-status');
 const { Product, Image, ProductList } = require('../models');
 const ApiError = require('../utils/ApiError');

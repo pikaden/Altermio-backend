@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
@@ -6,6 +7,7 @@ const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
 const productList = require('./productList.route');
 const productRoute = require('./product.route');
+const cartRoute = require('./cart.route');
 const walletRoute = require('./wallet.route')
 const config = require('../../config/config');
 
@@ -22,11 +24,15 @@ const defaultRoutes = [
   },
   {
     path: '/images',
-    route: imageRoute
+    route: imageRoute,
   },
   {
     path: '/comments',
-    route: commentRoute
+    route: commentRoute,
+  },
+  {
+    path: '/cart',
+    route: cartRoute,
   },
   {
     path: '/productLists',
