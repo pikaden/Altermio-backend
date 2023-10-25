@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { toJSON, paginateRefArrays } = require('./plugins');
 
 const productListSchema = mongoose.Schema({
     categoryName: {
@@ -11,6 +12,10 @@ const productListSchema = mongoose.Schema({
     }]
 }, { timestamps: true }
 )
+
+// add plugin that converts mongoose to json
+productListSchema.plugin(toJSON);
+productListSchema.plugin(paginateRefArrays);
 
 productListSchema.pre('remove', async function (next) {
     const oldProductList = this;

@@ -1,10 +1,11 @@
+/* eslint-disable prettier/prettier */
 const httpStatus = require('http-status');
 const { Product, Image, ProductList } = require('../models');
 const ApiError = require('../utils/ApiError');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const { uploadFileMiddleware, multipleUploadsMiddleware } = require('../middlewares/uploadFile');
-const { imageService, userService } = require('.');
+const { imageService, userService, productListService } = require('.');
 const { handleUpload } = require('./image.service');
 const { activateStatus } = require('../config/activate');
 
@@ -14,6 +15,10 @@ const { activateStatus } = require('../config/activate');
  * @returns {Promise<Product>}
  */
 const createProduct = async (accessTokenFromHeader, imageList, productBody) => {
+    const productListId = productBody.productListId;
+
+    productBody.category = productListId;
+
     // get userId from token
     const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
     const userId = payload.sub;
@@ -21,13 +26,11 @@ const createProduct = async (accessTokenFromHeader, imageList, productBody) => {
     productBody.sellerId = userId;
     productBody.images = imageList;
 
-    const productListCategory = productBody.productListCategory;
-    productBody.productListCategory = undefined;
     const product = await Product.create(productBody);
 
     // add to product list
     await ProductList.findOneAndUpdate(
-        { 'categoryName': productListCategory },
+        { "_id": productListId },
         { $addToSet: { 'products': product.id } },
         function (error, success) {
             if (error) {
