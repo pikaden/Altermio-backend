@@ -7,8 +7,8 @@ const imageRoute = require('./image.route');
 const commentRoute = require('./comment.route');
 const productList = require('./productList.route');
 const productRoute = require('./product.route');
-const cartRoute = require('./cart.route');
-const walletRoute = require('./wallet.route')
+const notificationRoute = require('./notification.route');
+const walletRoute = require('./wallet.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -31,21 +31,21 @@ const defaultRoutes = [
     route: commentRoute,
   },
   {
-    path: '/cart',
-    route: cartRoute,
-  },
-  {
     path: '/productLists',
-    route: productList
+    route: productList,
   },
   {
     path: '/products',
-    route: productRoute
+    route: productRoute,
+  },
+  {
+    path: '/notifications',
+    route: notificationRoute,
   },
   {
     path: '/wallets',
     route: walletRoute
-  }
+  },
 ];
 
 const devRoutes = [
