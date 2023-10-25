@@ -56,6 +56,25 @@ const queryProducts = async (filter, options) => {
 };
 
 /**
+ * Search for products, as 'LIKE' in SQL
+ * @param {Object} keyword - contains { keyword }
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const searchProduct = async (keyword, options) => {
+    const filter = {
+        $or: [
+            { name: { $regex: `.*${keyword.keyword}.*`, $options: 'i' } }
+        ]
+    }
+    const products = await Product.paginate(filter, options);
+    return products;
+};
+
+/**
  * Get product by id
  * @param {ObjectId} id
  * @returns {Promise<Product>}
@@ -315,6 +334,7 @@ const denyVerifyProduct = async (type, productId) => {
 module.exports = {
     createProduct,
     queryProducts,
+    searchProduct,
     getProductById,
     updateProductById,
     deleteProductById,
