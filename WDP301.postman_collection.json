@@ -61,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"test1@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -483,7 +483,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localhost}}products?brand=Apple",
+									"raw": "{{localhost}}products",
 									"host": [
 										"{{localhost}}products"
 									],
@@ -505,7 +505,8 @@
 										},
 										{
 											"key": "brand",
-											"value": "Apple"
+											"value": "Apple",
+											"disabled": true
 										},
 										{
 											"key": "category",
@@ -830,6 +831,49 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "search product as 'LIKE'",
+					"item": [
+						{
+							"name": "search product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}products/search?keyword=Iphone",
+									"host": [
+										"{{localhost}}products"
+									],
+									"path": [
+										"search"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "Iphone"
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "sortBy",
+											"value": "price",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -887,7 +931,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localhost}}productLists/manage/{{productListId}}?limit=5",
+									"raw": "{{localhost}}productLists/manage/{{productListId}}",
 									"host": [
 										"{{localhost}}productLists"
 									],
@@ -908,7 +952,8 @@
 										},
 										{
 											"key": "limit",
-											"value": "5"
+											"value": "5",
+											"disabled": true
 										}
 									]
 								}
@@ -978,6 +1023,43 @@
 							"response": []
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "wallet",
+			"item": [
+				{
+					"name": "add balance wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "access_token",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\":10000,\r\n    \"bankCode\":\"NCB\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}wallets/payment",
+							"host": [
+								"{{localhost}}wallets"
+							],
+							"path": [
+								"payment"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

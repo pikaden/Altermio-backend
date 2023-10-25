@@ -27,7 +27,7 @@ const createProduct = catchAsync(async (req, res) => {
         if (!productList) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Product list not found');
         }
-        
+
         const product = await productService.createProduct(accessTokenFromHeader, imageList, req.body);
         res.status(httpStatus.CREATED).send(product);
     } catch (error) {
@@ -42,6 +42,13 @@ const getProducts = catchAsync(async (req, res) => {
     const filter = pick(req.query, ['category', 'brand']);
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
     const result = await productService.queryProducts(filter, options);
+    res.send(result);
+});
+
+const searchProduct = catchAsync(async (req, res) => {
+    const keyword = pick(req.query, ['keyword']);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const result = await productService.searchProduct(keyword, options);
     res.send(result);
 });
 
@@ -116,6 +123,7 @@ const denyVerifyProduct = catchAsync(async (req, res) => {
 module.exports = {
     createProduct,
     getProducts,
+    searchProduct,
     getProduct,
     updateProduct,
     deleteProduct,
