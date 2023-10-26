@@ -747,7 +747,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localhost}}products/manageProducts/all?verified=deny&activate=pending",
+									"raw": "{{localhost}}products/manageProducts/all?verify=deny",
 									"host": [
 										"{{localhost}}products"
 									],
@@ -757,12 +757,13 @@
 									],
 									"query": [
 										{
-											"key": "verified",
+											"key": "verify",
 											"value": "deny"
 										},
 										{
 											"key": "activate",
-											"value": "pending"
+											"value": "accept",
+											"disabled": true
 										}
 									]
 								}
