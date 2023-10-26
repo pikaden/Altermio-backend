@@ -6,7 +6,7 @@ const allRoles = {
     'reportComment', 'manageReportedComments', 'deleteImage', 'deleteMultipleFiles', 
     'uploadSingleFile', 'deleteProduct', 'manageProducts', 'manageProductList'],
   moderator: ['postComment', 'deleteComment', 'reportComment', 'manageReportedComments', 'deleteImage',
-    'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct', 'manageProducts'],
+    'deleteMultipleFiles', 'uploadSingleFile', 'deleteProduct', 'manageProducts', 'getUsers'],
   courier: ['reportComment', 'deleteImage', 'deleteMultipleFiles', 'uploadSingleFile', 'uploadMultipleFiles']
 };
 
