@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { password, objectId } = require('./custom.validation');
+const { objectId } = require('./custom.validation');
 
 const createProduct = {
   FormData: Joi.object().keys({
@@ -15,13 +15,21 @@ const createProduct = {
 const getProducts = {
   query: Joi.object().keys({
     category: Joi.string(),
-    state: Joi.string(),
     brand: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
   }),
 };
+
+const searchProduct = {
+  query: Joi.object().keys({
+    keyword: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  })
+}
 
 const getProduct = {
   params: Joi.object().keys({
@@ -84,6 +92,7 @@ const denyReportedProduct = {
 module.exports = {
   createProduct,
   getProducts,
+  searchProduct,
   getProduct,
   updateProduct,
   deleteProduct,
