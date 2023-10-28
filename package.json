@@ -11,6 +11,7 @@
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write **/*.js",
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
+    "proxy": "http://localhost:3001",
     "prepare": "husky install"
   },
   "keywords": [
