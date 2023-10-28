@@ -16,9 +16,9 @@ const addBalance = catchAsync(async (req, res) => {
   if (!accessTokenFromHeader) {
     res.status(httpStatus.NOT_FOUND).send('Access token not found');
   }
-  const wallet = await walletService.addBalanceByBank(accessTokenFromHeader, req, res);
-  res.status(httpStatus.OK).send(wallet);
-});
+  const vnpUrl = await walletService.addBalanceByBank(accessTokenFromHeader, req, res)
+  res.status(httpStatus.OK).send(vnpUrl)
+})
 
 const returnIpn = catchAsync(async (req, res) => {
   const wallet = await walletService.returnIpn(req, res);

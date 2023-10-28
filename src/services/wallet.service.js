@@ -120,7 +120,7 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
   vnpUrl += `?${querystring.stringify(vnp_Params, { encode: false })}`;
 
   console.log(vnpUrl);
-  res.redirect(200, vnpUrl);
+  return vnpUrl;
 };
 
 const returnIpn = async (req, res) => {
