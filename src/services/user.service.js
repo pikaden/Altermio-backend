@@ -1,7 +1,9 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
 const walletService = require('./wallet.service');
+const config = require('../config/config');
 
 /**
  * Create a user
@@ -13,8 +15,8 @@ const createUser = async (userBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
   const user = await User.create(userBody);
-  const userId = user._id
-  const wall = walletService.createWallet(userId);
+  const userId = user._id;
+  walletService.createWallet(userId);
   return user;
 };
 
@@ -50,13 +52,21 @@ const getUserByEmail = async (email) => {
   return User.findOne({ email });
 };
 
+const getUserByToken = async (accessTokenFromHeader) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+  return User.findById(userId);
+};
+
 /**
- * Update user by id
+ * Update their own user profile by token
  * @param {ObjectId} userId
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateUserById = async (userId, updateBody) => {
+const updateUserById = async (accessTokenFromHeader, updateBody) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
   const user = await getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -88,6 +98,7 @@ module.exports = {
   queryUsers,
   getUserById,
   getUserByEmail,
+  getUserByToken,
   updateUserById,
   deleteUserById,
 };

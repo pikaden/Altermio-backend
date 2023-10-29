@@ -1,35 +1,34 @@
-let express = require('express');
-const httpStatus = require('http-status');
-const userService = require('./user.service');
-const request = require('request');
+/* eslint-disable global-require */
 const moment = require('moment');
-const ApiError = require('../utils/ApiError');
-const { Wallet } = require('../models');
 const jwt = require('jsonwebtoken');
+const { Wallet } = require('../models');
 const configVNP = require('../config/default.json');
 const config = require('../config/config');
 
 const createWallet = async (userId) => {
-  return Wallet.create({ coin: '0', userId: userId });
+  return Wallet.create({ coin: '0', userId });
 };
 
-const claimMoneyById = async(accessTokenFromHeader, req, res) => {
+const claimMoneyById = async (accessTokenFromHeader, req) => {
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
   const sellerId = payload.sub;
+  // eslint-disable-next-line no-use-before-define
   const sellerWallet = await getWalletById(sellerId);
-  const amount = req.body.amount;
+  const { amount } = req.body;
   const increaseSeller = {
     $inc: {
       coin: amount,
     },
   };
-  return increateSellerBalance = await Wallet.findByIdAndUpdate({ _id: sellerWallet._id }, increaseSeller);
-}
+  // eslint-disable-next-line no-return-assign, no-undef
+  return (increateSellerBalance = await Wallet.findByIdAndUpdate({ _id: sellerWallet._id }, increaseSeller));
+};
 
 const transferMoneyById = async (accessTokenFromHeader, req, res) => {
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
   const buyerId = payload.sub;
-  const amount = req.body.amount;
+  const { amount } = req.body;
+  // eslint-disable-next-line no-use-before-define
   const buyerWallet = await getWalletById(buyerId);
   if (buyerWallet.coin < amount) {
     res.status(400).json({ message: 'Insufficient balance' });
@@ -40,11 +39,18 @@ const transferMoneyById = async (accessTokenFromHeader, req, res) => {
       coin: -amount,
     },
   };
+  // eslint-disable-next-line no-return-assign, no-undef
   return (subtractBuyerBalance = await Wallet.findByIdAndUpdate({ _id: buyerWallet._id }, subtractBuyer));
 };
 
+const getWalletByToken = async (accessTokenFromHeader) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+  return Wallet.findOne({ userId });
+};
+
 const getWalletById = async (userId) => {
-  return Wallet.findOne({ userId: userId });
+  return Wallet.findOne({ userId });
 };
 
 const addBalance = async (userId, amount) => {
@@ -64,97 +70,102 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
 
   process.env.TZ = 'Asia/Ho_Chi_Minh';
 
-  let date = new Date();
-  let createDate = moment(date).format('YYYYMMDDHHmmss');
+  const date = new Date();
+  const createDate = moment(date).format('YYYYMMDDHHmmss');
 
-  let ipAddr =
+  const ipAddr =
     req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 
-  let tmnCode = configVNP.vnp_TmnCode;
-  let secretKey = configVNP.vnp_HashSecret;
+  const tmnCode = configVNP.vnp_TmnCode;
+  const secretKey = configVNP.vnp_HashSecret;
   let vnpUrl = configVNP.vnp_Url;
-  let returnUrl = configVNP.vnp_ReturnUrl;
+  const returnUrl = configVNP.vnp_ReturnUrl;
 
-  let orderId = moment(date).format('DDHHmmss');
-  let amount = req.body.amount;
-  let bankCode = req.body.bankCode;
+  const orderId = moment(date).format('DDHHmmss');
+  const { amount } = req.body;
+  const { bankCode } = req.body;
 
-  let locale = 'vn';
-  let currCode = 'VND';
+  const locale = 'vn';
+  const currCode = 'VND';
+  // eslint-disable-next-line camelcase
   let vnp_Params = {};
-  vnp_Params['vnp_Version'] = '2.1.0';
-  vnp_Params['vnp_Command'] = 'pay';
-  vnp_Params['vnp_TmnCode'] = tmnCode;
-  vnp_Params['vnp_Locale'] = locale;
-  vnp_Params['vnp_CurrCode'] = currCode;
-  vnp_Params['vnp_TxnRef'] = orderId;
-  vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
-  vnp_Params['vnp_OrderType'] = 'other';
-  vnp_Params['vnp_Amount'] = amount * 100;
-  vnp_Params['vnp_ReturnUrl'] = returnUrl + `/${userId}`;
-  vnp_Params['vnp_IpAddr'] = ipAddr;
-  vnp_Params['vnp_CreateDate'] = createDate;
+  vnp_Params.vnp_Version = '2.1.0';
+  vnp_Params.vnp_Command = 'pay';
+  vnp_Params.vnp_TmnCode = tmnCode;
+  vnp_Params.vnp_Locale = locale;
+  vnp_Params.vnp_CurrCode = currCode;
+  vnp_Params.vnp_TxnRef = orderId;
+  vnp_Params.vnp_OrderInfo = `Thanh toan cho ma GD:${orderId}`;
+  vnp_Params.vnp_OrderType = 'other';
+  vnp_Params.vnp_Amount = amount * 100;
+  vnp_Params.vnp_ReturnUrl = `${returnUrl}/${userId}`;
+  vnp_Params.vnp_IpAddr = ipAddr;
+  vnp_Params.vnp_CreateDate = createDate;
   if (bankCode !== null && bankCode !== '') {
-    vnp_Params['vnp_BankCode'] = bankCode;
+    vnp_Params.vnp_BankCode = bankCode;
   }
 
+  // eslint-disable-next-line no-use-before-define, camelcase
   vnp_Params = sortObject(vnp_Params);
 
-  let querystring = require('qs');
-  let signData = querystring.stringify(vnp_Params, { encode: false });
-  let crypto = require('crypto');
-  let hmac = crypto.createHmac('sha512', secretKey);
-  let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
-  vnp_Params['vnp_SecureHash'] = signed;
-  vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+  const querystring = require('qs');
+  const signData = querystring.stringify(vnp_Params, { encode: false });
+  const crypto = require('crypto');
+  const hmac = crypto.createHmac('sha512', secretKey);
+  const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
+  vnp_Params.vnp_SecureHash = signed;
+  vnpUrl += `?${querystring.stringify(vnp_Params, { encode: false })}`;
 
   console.log(vnpUrl);
-  res.redirect(vnpUrl);
+  return vnpUrl;
 };
 
 const returnIpn = async (req, res) => {
-  const userId = req.params.userId;
+  const { userId } = req.params;
 
   let vnp_Params = req.query;
-  let secureHash = vnp_Params['vnp_SecureHash'];
-  let secretKey = configVNP.vnp_HashSecret;
-  let orderId = vnp_Params['vnp_TxnRef'];
-  let rspCode = vnp_Params['vnp_ResponseCode'];
+  const secureHash = vnp_Params.vnp_SecureHash;
+  const secretKey = configVNP.vnp_HashSecret;
+  const rspCode = vnp_Params.vnp_ResponseCode;
 
-  delete vnp_Params['vnp_SecureHash'];
-  delete vnp_Params['vnp_SecureHashType'];
+  delete vnp_Params.vnp_SecureHash;
+  delete vnp_Params.vnp_SecureHashType;
 
   vnp_Params = sortObject(vnp_Params);
 
-  let querystring = require('qs');
-  let signData = querystring.stringify(vnp_Params, { encode: false });
-  let crypto = require('crypto');
-  let hmac = crypto.createHmac('sha512', secretKey);
-  let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  const querystring = require('qs');
+  const signData = querystring.stringify(vnp_Params, { encode: false });
+  const crypto = require('crypto');
+  const hmac = crypto.createHmac('sha512', secretKey);
+  // eslint-disable-next-line security/detect-new-buffer, no-buffer-constructor
+  const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
 
-  let paymentStatus = '0'; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
-  //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
-  //let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về nó
+  const paymentStatus = '0'; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
+  // let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
+  // let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về nó
 
-  let checkOrderId = true; // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
-  let checkAmount = true; // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
+  const checkOrderId = true; // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
+  const checkAmount = true; // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
   if (secureHash === signed) {
-    //kiểm tra checksum
+    // kiểm tra checksum
     if (checkOrderId) {
       if (checkAmount) {
+        // eslint-disable-next-line eqeqeq
         if (paymentStatus == '0') {
-          //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
+          // kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
+          // eslint-disable-next-line eqeqeq
           if (rspCode == '00') {
             // get user ID by token right here
 
             const wallet = addBalance(userId, vnp_Params.vnp_Amount / 100);
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           } else {
-            //that bai
-            //paymentStatus = '2'
+            // that bai
+            // paymentStatus = '2'
             // Ở đây cập nhật trạng thái giao dịch thanh toán thất bại vào CSDL của bạn
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           }
@@ -176,15 +187,18 @@ const returnIpn = async (req, res) => {
 };
 
 function sortObject(obj) {
-  let sorted = {};
-  let str = [];
+  const sorted = {};
+  const str = [];
   let key;
+  // eslint-disable-next-line no-restricted-syntax
   for (key in obj) {
+    // eslint-disable-next-line no-prototype-builtins
     if (obj.hasOwnProperty(key)) {
       str.push(encodeURIComponent(key));
     }
   }
   str.sort();
+  // eslint-disable-next-line no-plusplus
   for (key = 0; key < str.length; key++) {
     sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
   }
@@ -196,6 +210,7 @@ module.exports = {
   getWalletById,
   addBalance,
   transferMoneyById,
+  getWalletByToken,
   claimMoneyById,
   addBalanceByBank,
   returnIpn,
