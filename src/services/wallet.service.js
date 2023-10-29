@@ -161,6 +161,7 @@ const returnIpn = async (req, res) => {
           if (rspCode == '00') {
             // get user ID by token right here
 
+            const wallet = addBalance(userId, vnp_Params.vnp_Amount / 100);
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           } else {
             // that bai
