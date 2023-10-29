@@ -78,13 +78,12 @@ const deleteProduct = catchAsync(async (req, res) => {
     if (accessTokenFromHeader == '') {
         throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
     }
-
     await productService.deleteProductById(accessTokenFromHeader, req.params.productId);
     res.status(httpStatus.NO_CONTENT).send();
 });
 
 const getManagedProducts = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['verified', 'activate']);
+    const filter = pick(req.query, ['verify', 'activate']);
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
     const result = await productService.queryManagedProducts(filter, options);
     res.status(httpStatus.OK).send(result);
