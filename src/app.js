@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/message", messageRoutes); 
 
 // sanitize request data
 app.use(xss());
