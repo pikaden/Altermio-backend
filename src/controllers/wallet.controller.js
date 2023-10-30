@@ -23,14 +23,14 @@ const returnIpn = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send(wallet)
 })
 
-const transferMoneyById = catchAsync(async(req, res) => {
-  const accessTokenFromHeader = req.headers.access_token;
-  if (!accessTokenFromHeader) {
-    res.status(httpStatus.NOT_FOUND).send('Access token not found');
-  }
-  const wallet = await walletService.transferMoneyById(accessTokenFromHeader, req, res)
-  res.status(httpStatus.OK).send(wallet)
-})
+// const transferMoneyById = catchAsync(async(req, res) => {
+//   const accessTokenFromHeader = req.headers.access_token;
+//   if (!accessTokenFromHeader) {
+//     res.status(httpStatus.NOT_FOUND).send('Access token not found');
+//   }
+//   const wallet = await walletService.transferMoneyById(accessTokenFromHeader, req, res)
+//   res.status(httpStatus.OK).send(wallet)
+// })
 
 const claimMoneyById = catchAsync(async(req, res) => {
   const accessTokenFromHeader = req.headers.access_token;
@@ -49,7 +49,7 @@ const claimMoneyById = catchAsync(async(req, res) => {
 module.exports = {
   // createWallet,
   getWalletByUserId,
-  transferMoneyById,
+  // transferMoneyById,
   claimMoneyById,
   addBalance,
   returnIpn,

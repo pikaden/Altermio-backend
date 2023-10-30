@@ -8,4 +8,5 @@ module.exports.productListService = require('./productList.service');
 module.exports.productService = require('./product.service');
 module.exports.notificationService = require('./notification.service');
 module.exports.cartService = require('./cart.service');
-module.exports.walletService = require('./wallet.service')
+module.exports.walletService = require('./wallet.service');
+module.exports.orderService = require('./order.service');

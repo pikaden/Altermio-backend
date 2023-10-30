@@ -26,14 +26,14 @@ const claimMoneyById = async(accessTokenFromHeader, req, res) => {
   return increateSellerBalance = await Wallet.findByIdAndUpdate({ _id: sellerWallet._id }, increaseSeller);
 }
 
-const transferMoneyById = async (accessTokenFromHeader, req, res) => {
-  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
-  const buyerId = payload.sub;
-  const amount = req.body.amount;
+const transferMoneyById = async (buyerId, amount) => {
+  // const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  // const buyerId = payload.sub;
+  // const amount = req.body.amount;
+  console.log(buyerId + '  ' + amount);
   const buyerWallet = await getWalletById(buyerId);
   if (buyerWallet.coin < amount) {
-    res.status(400).json({ message: 'Insufficient balance' });
-    return;
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Not enough money');
   }
   const subtractBuyer = {
     $inc: {
