@@ -1,27 +1,19 @@
-// TODO: do chat model
+const mongoose = require("mongoose");
 
-const mongoose = require('mongoose');
-
-const chatSchema = mongoose.Schema({
-    customerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+const chatModel = mongoose.Schema(
+  {
+    chatName: { type: String, trim: true },
+    isGroupChat: { type: Boolean, default: false },
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    latestMessage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
     },
-    content: {
-        type: String,
-    },
-    readBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    }
-}, { timestamps: true }
-)
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
 
-/**
- * @typedef Chat
- */
-const Chat = mongoose.model('Chat', chatSchema);
+const Chat = mongoose.model("Chat", chatModel);
 
 module.exports = Chat;

@@ -10,6 +10,8 @@ const productRoute = require('./product.route');
 const notificationRoute = require('./notification.route');
 const walletRoute = require('./wallet.route');
 const config = require('../../config/config');
+const chat = require('./chat.route')
+const message = require('./chat.message')
 
 const router = express.Router();
 
@@ -45,6 +47,14 @@ const defaultRoutes = [
   {
     path: '/wallets',
     route: walletRoute
+  },
+  {
+    path: '/chat',
+    route: chat
+  },
+  {
+    path: '/message',
+    route: message
   },
 ];
 
