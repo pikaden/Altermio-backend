@@ -58,6 +58,19 @@ const getUserByToken = async (accessTokenFromHeader) => {
   return User.findById(userId);
 };
 
+const updateUserByIdAdmin = async (userId, updateBody) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  Object.assign(user, updateBody);
+  await user.save();
+  return user;
+};
+
 /**
  * Update their own user profile by token
  * @param {ObjectId} userId
@@ -101,4 +114,5 @@ module.exports = {
   getUserByToken,
   updateUserById,
   deleteUserById,
+  updateUserByIdAdmin,
 };

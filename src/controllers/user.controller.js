@@ -36,6 +36,11 @@ const getUser = catchAsync(async (req, res) => {
   res.send(user);
 });
 
+const updateUserAdmin = catchAsync(async (req, res) => {
+  const user = await userService.updateUserByIdAdmin(req.params.userId, req.body);
+  res.send(user);
+});
+
 const updateUser = catchAsync(async (req, res) => {
   const accessTokenFromHeader = req.headers.access_token;
   if (!accessTokenFromHeader) {
@@ -57,4 +62,5 @@ module.exports = {
   getUserByToken,
   updateUser,
   deleteUser,
+  updateUserAdmin
 };

@@ -30,6 +30,9 @@ const allRoles = {
     'deleteProduct',
     'manageProducts',
     'manageProductList',
+    'updateUserAdmin',
+    'updateUser',
+    'getUser'
   ],
   moderator: [
     'postComment',

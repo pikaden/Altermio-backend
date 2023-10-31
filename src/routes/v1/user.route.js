@@ -9,15 +9,18 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers)
-  .patch(auth('updateUser'), validate(userValidation.updateUser), userController.updateUser);
+  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
 
 router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser)
+  .patch(auth('updateUserAdmin'), validate(userValidation.updateUserAdmin), userController.updateUserAdmin);
 
-router.route('/me/profile').get(auth('getUser'), userController.getUserByToken);
+router
+  .route('/me/profile')
+  .get(auth('getUser'), userController.getUserByToken)
+  .patch(auth('updateUser'), validate(userValidation.updateUser), userController.updateUser);
 
 module.exports = router;
 
