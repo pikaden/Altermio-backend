@@ -11,7 +11,7 @@ const notificationRoute = require('./notification.route');
 const walletRoute = require('./wallet.route');
 const config = require('../../config/config');
 const chat = require('./chat.route')
-const message = require('./chat.message')
+const message = require('./message.route')
 
 const router = express.Router();
 
