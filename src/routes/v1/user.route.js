@@ -13,6 +13,10 @@ router
   .patch(auth('updateUser'), validate(userValidation.updateUser), userController.updateUser);
 
 router
+  .route('/search')
+  .get(userController.searchUser)
+
+router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
