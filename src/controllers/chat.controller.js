@@ -3,26 +3,31 @@ const Chat = require("../models/chat.model");
 const User = require("../models/user.model");
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const httpStatus = require("http-status");
+const { chatService } = require("../services");
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
 //@access          Protected
 const accessChat = asyncHandler(async (req, res) => {
-    // const { userId } = req.body;
+    const { userId } = req.body;
     const accessTokenFromHeader = req.headers.access_token;
 
     if (!accessTokenFromHeader) {
         res.status(httpStatus.NOT_FOUND).send('Access token not found');
     }
 
-    // get userId from token
+    // const FullChat = await chatService.accessChat(accessTokenFromHeader, userId);
+    // res.status(200).send(FullChat);
+
+    // get authorId from token
     const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
-    const userId = payload.sub;
+    const authorId = payload.sub;
 
     var isChat = await Chat.find({
         isGroupChat: false,
         $and: [
-            { users: { $elemMatch: { $eq: req.user._id } } },
+            { users: { $elemMatch: { $eq: authorId } } },
             { users: { $elemMatch: { $eq: userId } } },
         ],
     })
@@ -31,7 +36,7 @@ const accessChat = asyncHandler(async (req, res) => {
 
     isChat = await User.populate(isChat, {
         path: "latestMessage.sender",
-        select: "name pic email",
+        select: "firstName lastName avatar email",
     });
 
     if (isChat.length > 0) {
@@ -40,7 +45,7 @@ const accessChat = asyncHandler(async (req, res) => {
         var chatData = {
             chatName: "sender",
             isGroupChat: false,
-            users: [req.user._id, userId],
+            users: [authorId, userId],
         };
 
         try {
@@ -61,8 +66,18 @@ const accessChat = asyncHandler(async (req, res) => {
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+
+    if (!accessTokenFromHeader) {
+        res.status(httpStatus.NOT_FOUND).send('Access token not found');
+    }
+
+    // get userId from token
+    const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+    const userId = payload.sub;
+
     try {
-        Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+        Chat.find({ users: { $elemMatch: { $eq: userId } } })
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("latestMessage")
@@ -70,7 +85,7 @@ const fetchChats = asyncHandler(async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "name pic email",
+                    select: "firstName lastName avatar email",
                 });
                 res.status(200).send(results);
             });

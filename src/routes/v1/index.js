@@ -53,7 +53,7 @@ const defaultRoutes = [
     route: chatRoute
   },
   {
-    path: 'messages',
+    path: '/messages',
     route: messageRoute
   }
 ];
