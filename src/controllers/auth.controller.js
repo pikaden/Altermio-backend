@@ -4,7 +4,7 @@ const { authService, userService, tokenService, emailService } = require('../ser
 
 const register = catchAsync(async (req, res) => {
   // set default image for user avatar
-  req.body.avatar = '651b7ad7610e5f19985103db';
+  req.body.avatar = "651b7ad7610e5f19985103db";
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.CREATED).send({ user, tokens });
@@ -38,11 +38,6 @@ const resetPassword = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const checkTakenEmail = catchAsync(async (req, res) => {
-  const s = await authService.checkTakenEmail(req.body.email);
-  res.send(s)
-});
-
 const sendVerificationEmail = catchAsync(async (req, res) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
   await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
@@ -61,7 +56,6 @@ module.exports = {
   refreshTokens,
   forgotPassword,
   resetPassword,
-  checkTakenEmail,
   sendVerificationEmail,
   verifyEmail,
 };
