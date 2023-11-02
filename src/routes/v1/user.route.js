@@ -12,6 +12,10 @@ router
   .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
 
 router
+  .route('/search')
+  .get(userController.searchUser)
+
+router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser)
