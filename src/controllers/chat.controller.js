@@ -111,17 +111,28 @@ const createGroupChat = asyncHandler(async (req, res) => {
             .send("More than 2 users are required to form a group chat");
     }
 
-    users.push(req.user);
+    const accessTokenFromHeader = req.headers.access_token;
+
+    if (!accessTokenFromHeader) {
+        res.status(httpStatus.NOT_FOUND).send('Access token not found');
+    }
+
+    // get userId from token
+    const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+    const userId = payload.sub;
+
+    users.push(userId);
+    console.log(users);
 
     try {
         const groupChat = await Chat.create({
             chatName: req.body.name,
             users: users,
             isGroupChat: true,
-            groupAdmin: req.user,
+            groupAdmin: userId,
         });
 
-        const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+        const fullGroupChat = await Chat.findById(groupChat._id)
             .populate("users", "-password")
             .populate("groupAdmin", "-password");
 
