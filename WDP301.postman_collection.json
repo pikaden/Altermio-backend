@@ -61,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test1@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"raw": "{\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"password1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,6 +103,32 @@
 							"path": [
 								"logout",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"phamngocnhan8@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}auth/forgot-password",
+							"host": [
+								"{{localhost}}auth"
+							],
+							"path": [
+								"forgot-password"
 							]
 						}
 					},
@@ -447,27 +473,123 @@
 			]
 		},
 		{
-			"name": "user (admin only)",
+			"name": "user",
 			"item": [
 				{
-					"name": "get users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{localhost}}users?role=admin",
-							"host": [
-								"{{localhost}}users"
-							],
-							"query": [
-								{
-									"key": "role",
-									"value": "admin"
+					"name": "admin role",
+					"item": [
+						{
+							"name": "get users (bug)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}users?role=admin",
+									"host": [
+										"{{localhost}}users"
+									],
+									"query": [
+										{
+											"key": "role",
+											"value": "admin"
+										}
+									]
 								}
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
+				},
+				{
+					"name": "user role",
+					"item": [
+						{
+							"name": "get user by token",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}users/me/profile",
+									"host": [
+										"{{localhost}}users"
+									],
+									"path": [
+										"me",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user update profile",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}users",
+									"host": [
+										"{{localhost}}users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "search",
+					"item": [
+						{
+							"name": "search user",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "access_token",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{localhost}}users/search/?search=abc",
+									"host": [
+										"{{localhost}}users"
+									],
+									"path": [
+										"search",
+										""
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "abc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -512,6 +634,11 @@
 											"key": "category",
 											"value": "{{categoryId}}",
 											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "Iphone 15",
+											"disabled": true
 										}
 									]
 								}
@@ -535,12 +662,6 @@
 										{
 											"key": "name",
 											"value": "Iphone 11",
-											"contentType": "",
-											"type": "text"
-										},
-										{
-											"key": "category",
-											"value": "Smartphone",
 											"contentType": "",
 											"type": "text"
 										},
@@ -932,7 +1053,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localhost}}productLists/manage/{{productListId}}",
+									"raw": "{{localhost}}productLists/manage/{{productListId}}?sortBy=brand",
 									"host": [
 										"{{localhost}}productLists"
 									],
@@ -943,8 +1064,7 @@
 									"query": [
 										{
 											"key": "sortBy",
-											"value": "brand",
-											"disabled": true
+											"value": "brand"
 										},
 										{
 											"key": "page",
@@ -1057,6 +1177,48 @@
 							],
 							"path": [
 								"payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chat",
+			"item": [
+				{
+					"name": "get messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}messages/651d40eebb6bac07c86998fc",
+							"host": [
+								"{{localhost}}messages"
+							],
+							"path": [
+								"651d40eebb6bac07c86998fc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fetch chats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "access_token",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}chats",
+							"host": [
+								"{{localhost}}chats"
 							]
 						}
 					},
