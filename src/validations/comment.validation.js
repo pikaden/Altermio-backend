@@ -2,14 +2,10 @@ const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
 const postComment = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
-  }),
   body: Joi.object().keys({
     content: Joi.string().allow(''),
-    sellerId: Joi.string().required(),
     productId: Joi.string().required(),
-    rating: Joi.number().integer().min(0).max(5),
+    rating: Joi.number().integer().min(0).max(5)
   }),
 };
 
@@ -38,7 +34,7 @@ const updateComment = {
   body: Joi.object()
     .keys({
       content: Joi.string().allow(''),
-      rating: Joi.number().integer(),
+      rating: Joi.number().integer()
     })
     .min(1),
 };
@@ -62,5 +58,5 @@ module.exports = {
   getComment,
   updateComment,
   deleteComment,
-  patchReportComment,
+  patchReportComment
 };

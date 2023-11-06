@@ -10,6 +10,10 @@ const router = express.Router();
 // role user can update, delete their own comment
 
 router
+  .route('/user')
+  .post(auth('postComment'), validate(commentValidation.testPostComment), commentController.postComment)
+
+router
   .route('/user/:userId')
   // userId here can be sellerId or buyerId
   .get(validate(commentValidation.getCommentsByUserId), commentController.getCommentsByUserId)
