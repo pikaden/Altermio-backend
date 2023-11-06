@@ -12,12 +12,15 @@ const config = require('../config/config');
  * @param {Object} commentBody
  * @returns {Promise<Comment>}
  */
-const postComment = async (buyerId, commentBody) => {
-  commentBody.buyerId = buyerId;
+const postComment = async (accessTokenFromHeader, sellerId, commentBody) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const buyerId = payload.sub;
+  commentBody.buyerId = buyerId
+  commentBody.sellerId = sellerId
   const newComment = await Comment.create(commentBody);
 
   // save newComment at user.comments, both seller and buyer
-  const sellerId = commentBody.sellerId;
+  // const sellerId = commentBody.sellerId;
   const buyer = await userService.getUserById(buyerId);
   const seller = await userService.getUserById(sellerId);
 

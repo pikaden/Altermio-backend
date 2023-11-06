@@ -51,8 +51,8 @@ const userSchema = mongoose.Schema(
       default: ''
     },
     phoneNumber: {
-      type: Number,
-      trim: true
+      type: String,
+      trim: false
     },
     role: {
       type: String,

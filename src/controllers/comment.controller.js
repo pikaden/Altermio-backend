@@ -4,8 +4,12 @@ const catchAsync = require('../utils/catchAsync');
 const { commentService } = require('../services');
 
 const postComment = catchAsync(async (req, res) => {
-  const comment = await commentService.postComment(req.params.userId, req.body);
-  res.status(httpStatus.CREATED).send(comment);
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+  const comment = await commentService.postComment(accessTokenFromHeader,req.params.userId, req.body);
+  res.status(httpStatus.ok).send(comment);
 });
 
 const getComment = catchAsync(async (req, res) => {
