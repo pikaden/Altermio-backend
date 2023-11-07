@@ -1,7 +1,9 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
 const walletService = require('./wallet.service');
+const config = require('../config/config');
 
 /**
  * Create a user
@@ -13,8 +15,8 @@ const createUser = async (userBody) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
   const user = await User.create(userBody);
-  const userId = user._id
-  const wall = walletService.createWallet(userId);
+  const userId = user._id;
+  walletService.createWallet(userId);
   return user;
 };
 
@@ -29,6 +31,19 @@ const createUser = async (userBody) => {
  */
 const queryUsers = async (filter, options) => {
   const users = await User.paginate(filter, options);
+  return users;
+};
+
+/**
+ * Search user by firstname, lastname or email, except their own account
+ * @param {String} keyword 
+ * @param {String} accessTokenFromHeader 
+ * @returns 
+ */
+const searchUser = async (keyword, accessTokenFromHeader) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+  const users = await User.find(keyword).find({ _id: { $ne: userId } });
   return users;
 };
 
@@ -50,13 +65,34 @@ const getUserByEmail = async (email) => {
   return User.findOne({ email });
 };
 
+const getUserByToken = async (accessTokenFromHeader) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
+  return User.findById(userId);
+};
+
+const updateUserByIdAdmin = async (userId, updateBody) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  Object.assign(user, updateBody);
+  await user.save();
+  return user;
+};
+
 /**
- * Update user by id
+ * Update their own user profile by token
  * @param {ObjectId} userId
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateUserById = async (userId, updateBody) => {
+const updateUserById = async (accessTokenFromHeader, updateBody) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const userId = payload.sub;
   const user = await getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -86,8 +122,11 @@ const deleteUserById = async (userId) => {
 module.exports = {
   createUser,
   queryUsers,
+  searchUser,
   getUserById,
   getUserByEmail,
+  getUserByToken,
   updateUserById,
   deleteUserById,
+  updateUserByIdAdmin,
 };

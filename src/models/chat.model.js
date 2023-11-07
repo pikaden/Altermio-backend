@@ -1,21 +1,14 @@
-// TODO: do chat model
-
 const mongoose = require('mongoose');
 
 const chatSchema = mongoose.Schema({
-    customerId: {
+    chatName: { type: String, trim: true },
+    isGroupChat: { type: Boolean, default: false },
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    latestMessage: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+        ref: "Message",
     },
-    content: {
-        type: String,
-    },
-    readBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    }
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 }, { timestamps: true }
 )
 

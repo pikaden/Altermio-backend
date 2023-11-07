@@ -61,7 +61,7 @@ const deleteProduct = {
 
 const getManagedProducts = {
   query: Joi.object().keys({
-    verified: Joi.string(),
+    verify: Joi.string(),
     activate: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
