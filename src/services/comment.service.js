@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Comment } = require('../models');
+const { Comment, User } = require('../models');
 const { tokenService } = require('.');
 const ApiError = require('../utils/ApiError');
 const { userService } = require('.');
@@ -49,9 +49,12 @@ const getCommentById = async (id) => {
  * @param {ObjectId} userId
  * @returns {Promise<QueryResult>}
  */
-const queryCommentsByUserId = async (userId) => {
-  const user = await userService.getUserById(userId);
-  return user.comments;
+const queryCommentsByUserId = async (userId, options) => {
+  // const user = await userService.getUserById(userId);
+  // return user.comments;
+  const refArray = 'comments';
+  const comments = await User.paginateRefArrays(userId, refArray, options);
+  return comments;
 };
 
 /**

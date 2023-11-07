@@ -18,7 +18,8 @@ const getComment = catchAsync(async (req, res) => {
 });
 
 const getCommentsByUserId = catchAsync(async (req, res) => {
-  const result = await commentService.queryCommentsByUserId(req.params.userId);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await commentService.queryCommentsByUserId(req.params.userId, options);
   res.status(httpStatus.OK).send(result);
 });
 
