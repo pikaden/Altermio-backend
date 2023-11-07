@@ -52,4 +52,8 @@ router
     .put(auth('manageProducts'), validate(productValidation.acceptReportedProduct), productController.acceptVerifyProduct)
     .patch(auth('manageProducts'), validate(productValidation.denyReportedProduct), productController.denyVerifyProduct)
 
+router
+    .route('/manageProducts/myProducts')
+    .get(productController.getMyProducts)
+
 module.exports = router;
