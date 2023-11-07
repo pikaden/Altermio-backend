@@ -41,7 +41,7 @@ const updateProduct = {
   params: Joi.object().keys({
     productId: Joi.required().custom(objectId),
   }),
-  body: Joi.object()
+  FormData: Joi.object()
     .keys({
       name: Joi.string(),
       category: Joi.string(),

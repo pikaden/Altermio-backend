@@ -9,6 +9,8 @@ const productList = require('./productList.route');
 const productRoute = require('./product.route');
 const notificationRoute = require('./notification.route');
 const walletRoute = require('./wallet.route');
+const chatRoute = require('./chat.route');
+const messageRoute = require('./message.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -46,6 +48,14 @@ const defaultRoutes = [
     path: '/wallets',
     route: walletRoute
   },
+  {
+    path: '/chats',
+    route: chatRoute
+  },
+  {
+    path: '/messages',
+    route: messageRoute
+  }
 ];
 
 const devRoutes = [

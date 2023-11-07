@@ -16,6 +16,26 @@ const getUsers = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const searchUser = catchAsync(async (req, res) => {
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+
+  const keyword = req.query.search
+    ? {
+      $or: [
+        { firstName: { $regex: req.query.search, $options: "i" } },
+        { lastName: { $regex: req.query.search, $options: "i" } },
+        { email: { $regex: req.query.search, $options: "i" } },
+      ],
+    }
+    : {};
+  
+  const users = await userService.searchUser(keyword, accessTokenFromHeader);
+  res.send(users);
+});
+
 const getUserByToken = catchAsync(async (req, res) => {
   const accessTokenFromHeader = req.headers.access_token;
   if (!accessTokenFromHeader) {
@@ -58,6 +78,7 @@ const deleteUser = catchAsync(async (req, res) => {
 module.exports = {
   createUser,
   getUsers,
+  searchUser,
   getUser,
   getUserByToken,
   updateUser,
