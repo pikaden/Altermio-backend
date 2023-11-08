@@ -10,3 +10,4 @@ module.exports.notificationService = require('./notification.service');
 module.exports.cartService = require('./cart.service');
 module.exports.walletService = require('./wallet.service');
 module.exports.chatService = require('./chat.service');
+module.exports.orderService = require('./order.service');

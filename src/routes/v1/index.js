@@ -9,6 +9,8 @@ const productList = require('./productList.route');
 const productRoute = require('./product.route');
 const notificationRoute = require('./notification.route');
 const walletRoute = require('./wallet.route');
+const cartRoute = require('./cart.route');
+const orderRoute = require('./order.route');
 const chatRoute = require('./chat.route');
 const messageRoute = require('./message.route');
 const config = require('../../config/config');
@@ -47,6 +49,14 @@ const defaultRoutes = [
   {
     path: '/wallets',
     route: walletRoute
+  },
+  {
+    path: '/cart',
+    route: cartRoute,
+  },
+  {
+    path: '/order',
+    route: orderRoute,
   },
   {
     path: '/chats',
