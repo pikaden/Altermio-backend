@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Comment } = require('../models');
+const { Comment, User } = require('../models');
 const { tokenService } = require('.');
 const ApiError = require('../utils/ApiError');
 const { userService } = require('.');
@@ -12,7 +12,9 @@ const config = require('../config/config');
  * @param {Object} commentBody
  * @returns {Promise<Comment>}
  */
-const postComment = async (buyerId, commentBody) => {
+const postComment = async (accessTokenFromHeader, commentBody) => {
+  const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+  const buyerId = payload.sub;
   commentBody.buyerId = buyerId;
   const newComment = await Comment.create(commentBody);
 
@@ -35,28 +37,31 @@ const postComment = async (buyerId, commentBody) => {
 
 /**
  * Get comment by id
- * @param {ObjectId} id 
+ * @param {ObjectId} id
  * @returns {Promise<Comment>}
  */
 const getCommentById = async (id) => {
   return Comment.findById(id);
-}
+};
 
 /**
  * Query for commments of a user
  * @param {ObjectId} userId
  * @returns {Promise<QueryResult>}
  */
-const queryCommentsByUserId = async (userId) => {
-  const user = await userService.getUserById(userId);
-  return user.comments;
-}
+const queryCommentsByUserId = async (userId, options) => {
+  // const user = await userService.getUserById(userId);
+  // return user.comments;
+  const refArray = 'comments';
+  const comments = await User.paginateRefArrays(userId, refArray, options);
+  return comments;
+};
 
 /**
  * Update comment by id
  * @param {String} accessTokenFromHeader
- * @param {ObjectId} commentId 
- * @param {Object} commentBody 
+ * @param {ObjectId} commentId
+ * @param {Object} commentBody
  * @returns {Promise<Comment>}
  */
 const updateCommentById = async (accessTokenFromHeader, commentId, commentBody) => {
@@ -76,7 +81,7 @@ const updateCommentById = async (accessTokenFromHeader, commentId, commentBody) 
     await comment.save();
     return comment;
   }
-}
+};
 
 /**
  * Delete comment by id
@@ -113,12 +118,12 @@ const deleteCommentById = async (accessTokenFromHeader, commentId) => {
 const queryReportedComments = async () => {
   const reportedComments = await Comment.find({ isReported: true });
   return reportedComments;
-}
+};
 
 /**
  * report comment from user to moderator and admin
- * @param {string} typeReport 
- * @param {ObjectId} commentId 
+ * @param {string} typeReport
+ * @param {ObjectId} commentId
  * @returns {Promise<Comment>}
  */
 const reportComment = async (typeReport, commentId) => {
@@ -137,12 +142,12 @@ const reportComment = async (typeReport, commentId) => {
   comment.isReported = true;
   await comment.save();
   return comment;
-}
+};
 
 /**
  * deny report comment, meaning that comment is not flagged
- * @param {string} typeReport 
- * @param {ObjectId} commentId 
+ * @param {string} typeReport
+ * @param {ObjectId} commentId
  * @returns {Promise<Comment>}
  */
 const denyReportedComment = async (typeReport, commentId) => {
@@ -161,7 +166,7 @@ const denyReportedComment = async (typeReport, commentId) => {
   comment.isReported = false;
   await comment.save();
   return comment;
-}
+};
 
 module.exports = {
   postComment,
@@ -171,5 +176,5 @@ module.exports = {
   deleteCommentById,
   queryReportedComments,
   reportComment,
-  denyReportedComment
+  denyReportedComment,
 };

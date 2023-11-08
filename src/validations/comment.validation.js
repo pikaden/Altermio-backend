@@ -4,9 +4,8 @@ const { objectId } = require('./custom.validation');
 const postComment = {
   body: Joi.object().keys({
     content: Joi.string().allow(''),
-    sellerId: Joi.string().required(),
     productId: Joi.string().required(),
-    rating: Joi.number().integer()
+    rating: Joi.number().integer().min(0).max(5)
   }),
 };
 

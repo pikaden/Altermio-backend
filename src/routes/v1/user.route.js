@@ -17,7 +17,7 @@ router
 
 router
   .route('/:userId')
-  .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
+  .get(validate(userValidation.getUser), userController.getUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser)
   .patch(auth('updateUserAdmin'), validate(userValidation.updateUserAdmin), userController.updateUserAdmin);
 

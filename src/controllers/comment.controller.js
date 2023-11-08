@@ -4,19 +4,24 @@ const catchAsync = require('../utils/catchAsync');
 const { commentService } = require('../services');
 
 const postComment = catchAsync(async (req, res) => {
-  const comment = await commentService.postComment(req.params.userId, req.body);
-  res.status(httpStatus.CREATED).send(comment);
+  const accessTokenFromHeader = req.headers.access_token;
+  if (!accessTokenFromHeader) {
+    res.status(httpStatus.NOT_FOUND).send('Access token not found');
+  }
+  const comment = await commentService.postComment(accessTokenFromHeader, req.body);
+  res.status(httpStatus.OK).send(comment);
 });
 
 const getComment = catchAsync(async (req, res) => {
   const comment = await commentService.getCommentById(req.params.commentId);
   res.status(httpStatus.OK).send(comment);
-})
+});
 
 const getCommentsByUserId = catchAsync(async (req, res) => {
-  const result = await commentService.queryCommentsByUserId(req.params.userId);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await commentService.queryCommentsByUserId(req.params.userId, options);
   res.status(httpStatus.OK).send(result);
-})
+});
 
 const updateComment = catchAsync(async (req, res) => {
   // get access token from headers
@@ -43,7 +48,7 @@ const deleteComment = catchAsync(async (req, res) => {
 const getReportedComments = catchAsync(async (req, res) => {
   const result = await commentService.queryReportedComments();
   res.status(httpStatus.OK).send(result);
-})
+});
 
 const reportComment = catchAsync(async (req, res) => {
   const reportComment = await commentService.reportComment(req.params.type, req.params.commentId);
@@ -53,7 +58,7 @@ const reportComment = catchAsync(async (req, res) => {
 const denyReportedComment = catchAsync(async (req, res) => {
   const denyReportedComment = await commentService.denyReportedComment(req.params.type, req.params.commentId);
   res.status(httpStatus.OK).send(denyReportedComment);
-})
+});
 
 module.exports = {
   postComment,
@@ -63,5 +68,5 @@ module.exports = {
   deleteComment,
   getReportedComments,
   reportComment,
-  denyReportedComment
+  denyReportedComment,
 };
