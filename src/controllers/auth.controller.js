@@ -4,7 +4,7 @@ const { authService, userService, tokenService, emailService } = require('../ser
 
 const register = catchAsync(async (req, res) => {
   // set default image for user avatar
-  req.body.avatar = '651b7ad7610e5f19985103db';
+  // req.body.avatar = '654a711c0126073adc731680';
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.CREATED).send({ user, tokens });
