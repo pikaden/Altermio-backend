@@ -20,6 +20,10 @@ router
     .get(validate(productValidation.getProducts), productController.getProducts)
 
 router
+    .route('/user/:userId')
+    .get(validate(productValidation.getProducts), productController.getProductByUserId)
+
+router
     .route('/search')
     .get(validate(productValidation.searchProduct), productController.searchProduct)
 

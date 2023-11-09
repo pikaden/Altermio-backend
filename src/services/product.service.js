@@ -339,6 +339,11 @@ const denyVerifyProduct = async (type, productId) => {
     return product;
 }
 
+<<<<<<< HEAD
+const getProductByUserId = async (userId) => {
+    const product = await Product.find({sellerId: userId})
+    return product
+=======
 const getMyProducts = async (accessTokenFromHeader, options) => {
     // get userId from token
     const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
@@ -351,6 +356,7 @@ const getMyProducts = async (accessTokenFromHeader, options) => {
     }
     const products = await Product.paginate(filter, options);
     return products;
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 }
 
 module.exports = {
@@ -368,5 +374,9 @@ module.exports = {
     requestVerifyProduct,
     acceptVerifyProduct,
     denyVerifyProduct,
+<<<<<<< HEAD
+    getProductByUserId
+=======
     getMyProducts
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 };
