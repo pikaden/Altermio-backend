@@ -119,6 +119,11 @@ const denyVerifyProduct = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).send(denyVerifyProduct);
 })
 
+const getProductByUserId = catchAsync(async (req, res) => {
+    const getProductByUserId = await productService.getProductByUserId(req.params.userId);
+    res.status(httpStatus.OK).send(getProductByUserId);
+})
+
 module.exports = {
     createProduct,
     getProducts,
@@ -132,5 +137,6 @@ module.exports = {
     denyReportedProduct,
     requestVerifyProduct,
     acceptVerifyProduct,
-    denyVerifyProduct
+    denyVerifyProduct,
+    getProductByUserId
 };

@@ -332,6 +332,11 @@ const denyVerifyProduct = async (type, productId) => {
     return product;
 }
 
+const getProductByUserId = async (userId) => {
+    const product = await Product.find({sellerId: userId})
+    return product
+}
+
 module.exports = {
     createProduct,
     queryProducts,
@@ -346,5 +351,6 @@ module.exports = {
     denyReportedProduct,
     requestVerifyProduct,
     acceptVerifyProduct,
-    denyVerifyProduct
+    denyVerifyProduct,
+    getProductByUserId
 };
