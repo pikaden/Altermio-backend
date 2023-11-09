@@ -27,33 +27,33 @@ const createOrder = async (accessTokenFromHeader, items) => {
     const totalPrice = await getTotalPriceOfItems(items)
     await walletService.transferMoneyById(id,totalPrice)
     try {
-        const newOrder = new Order({
-            customerId: id,
-            orderDate: new Date(),
-            status: "Pending",
-            items,
-            totalPrice
-        });
-        await newOrder.save();
-        return newOrder;
+        const orders = [];
+        for (const productId of items) {
+            const pruduct = await Product.findById(productId)
+            const newOrder = new Order({
+                customerId: id,
+                orderDate: new Date(),
+                status: "Pending",
+                item: productId, 
+                totalPrice: pruduct.price
+            });
+            const savedOrder = await newOrder.save();
+            orders.push(savedOrder);
+        }
+    return orders
     } catch (error) {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error occurs when create order');
     }
 };
 
 const cancelOrder = async (accessTokenFromHeader, orderId) => {
-    const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
-    const id = payload.sub;
-    const currentUser = await User.findById(id)
     try {
         const foundOrder = await Order.findById(orderId);
-        if (id != foundOrder.customerId && currentUser.role != 'admin'){
-            throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Not permitted');
-        }
+        
         if (!foundOrder) {
             throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found1');
         }
-        foundOrder.status = 'canceled';
+        foundOrder.status = 'Canceled';
         const updatedOrder = await foundOrder.save();
         return updatedOrder;
     } catch (error) {
@@ -64,12 +64,13 @@ const cancelOrder = async (accessTokenFromHeader, orderId) => {
 const getOrderByUserId = async (accessTokenFromHeader) => {
     const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
     const id = payload.sub;
-      return Order.find({ customerId: id});
+    const orders = await Order.find({ customerId: id }).populate('item').exec();
+    return orders
     }
    
 const getOrderById = async (orderId) => {
     try {
-        const order = await Order.findById(orderId);
+        const order = await Order.findById(orderId).populate('item').exec();
         if (!order) {
             throw new Error('Order not found');
         }
@@ -80,6 +81,52 @@ const getOrderById = async (orderId) => {
     }
 };
 
+const getOrderBySellerId = async (accessTokenFromHeader) => {
+    try {
+        const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+        const id = payload.sub;
+
+        const products = await Product.find({ sellerId: id }, '_id');
+        const productIds = products.map(product => product._id);
+
+        const orders = await Order.find({ item: { $in: productIds }, $or: [
+            { status: "Pending" },
+            { status: "Refund" }
+          ]}).populate('item').exec();
+        
+        return orders;
+    } catch (err) {
+        console.error(err);
+        // Xử lý lỗi ở đây
+        throw err;
+    }
+};
+
+const changeOrderStatus = async (orderId, status = 'Denied') => {
+    
+    try {
+        const foundOrder = await Order.findById(orderId);
+        if (!foundOrder) {
+            throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found1');
+        }
+        foundOrder.status = status;
+        const updatedOrder = await foundOrder.save();
+        return updatedOrder;
+    } catch (error) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found2');
+    }
+};
+
+const getOrderForCourier = async (status = 'Accepted') => {
+    try {
+        const orders = await Order.find({ status }).populate('item').exec();
+        return orders;
+    } catch (err) {
+        console.error(err);
+        // Xử lý lỗi ở đây
+        throw err;
+    }
+};
 
 // const deleteOrder = async (orderId) => {
 //     try {
@@ -99,7 +146,11 @@ module.exports = {
    createOrder,
    cancelOrder,
    getOrderByUserId,
-   getOrderById
+   getOrderById,
+   getOrderBySellerId,
+   changeOrderStatus,
+   getOrderForCourier
+   
 }
    
 

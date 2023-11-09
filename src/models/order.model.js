@@ -13,15 +13,15 @@ const orderSchema = mongoose.Schema({
     status: {
         type: String,
     },
-    items: [{
+    item: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
-    }],
+    },
     totalPrice: {
         type: Number
     }
 }, { timestamps: true }
-)
+);
 
 /**
  * @typedef Order
