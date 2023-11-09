@@ -133,11 +133,11 @@ const denyVerifyProduct = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).send(denyVerifyProduct);
 })
 
-<<<<<<< HEAD
 const getProductByUserId = catchAsync(async (req, res) => {
     const getProductByUserId = await productService.getProductByUserId(req.params.userId);
     res.status(httpStatus.OK).send(getProductByUserId);
-=======
+})
+
 const getMyProducts = catchAsync(async (req, res) => {
     // get access token from headers
     const accessTokenFromHeader = req.headers.access_token;
@@ -152,7 +152,6 @@ const getMyProducts = catchAsync(async (req, res) => {
         res.status(httpStatus.NOT_FOUND, 'Product not found');
     }
     res.status(httpStatus.OK).send(product);
->>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 })
 
 module.exports = {
@@ -169,9 +168,6 @@ module.exports = {
     requestVerifyProduct,
     acceptVerifyProduct,
     denyVerifyProduct,
-<<<<<<< HEAD
-    getProductByUserId
-=======
+    getProductByUserId,
     getMyProducts
->>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 };
