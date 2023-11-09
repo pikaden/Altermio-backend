@@ -46,15 +46,16 @@ const createOrder = async (accessTokenFromHeader, items) => {
     }
 };
 
-const cancelOrder = async (accessTokenFromHeader, orderId) => {
+const cancelOrder = async (accessTokenFromHeader, orderId, status = 'Canceled') => {
     try {
         const foundOrder = await Order.findById(orderId);
         
         if (!foundOrder) {
             throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found1');
         }
-        foundOrder.status = 'Canceled';
+        foundOrder.status = status;
         const updatedOrder = await foundOrder.save();
+        walletService.addBalance(foundOrder.customerId, foundOrder.totalPrice)
         return updatedOrder;
     } catch (error) {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found2');
@@ -105,11 +106,14 @@ const getOrderBySellerId = async (accessTokenFromHeader) => {
 const changeOrderStatus = async (orderId, status = 'Denied') => {
     
     try {
-        const foundOrder = await Order.findById(orderId);
+        const foundOrder = await Order.findById(orderId).populate('item').exec();
         if (!foundOrder) {
             throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Order not found1');
         }
         foundOrder.status = status;
+        if (status === 'Done'){
+            walletService.addBalance(foundOrder.item.sellerId, foundOrder.totalPrice)
+        }
         const updatedOrder = await foundOrder.save();
         return updatedOrder;
     } catch (error) {

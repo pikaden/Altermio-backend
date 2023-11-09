@@ -27,6 +27,17 @@ const createOrder = catchAsync(async (req, res) => {
       }
   res.send(order);
   });
+  const acceptRefund = catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const order = await orderService.cancelOrder(accessTokenFromHeader, req.body.orderId, 'Accept Refund');
+    if (!order) {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cant cancel order');
+      }
+  res.send(order);
+  });
   const acceptOrder = catchAsync(async (req, res) => {
     const accessTokenFromHeader = req.headers.access_token;
         if (accessTokenFromHeader === '') {
@@ -50,6 +61,50 @@ const createOrder = catchAsync(async (req, res) => {
       }
   res.send(order);
   });
+  const deliveredOrder = catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const order = await orderService.changeOrderStatus(req.body.orderId, 'Delivered');
+    if (!order) {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cant cancel order');
+      }
+  res.send(order);
+  });
+  const refundOrder = catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const order = await orderService.changeOrderStatus(req.body.orderId, 'Refund');
+    if (!order) {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cant cancel order');
+      }
+  res.send(order);
+  });
+  const denyRefund = catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const order = await orderService.changeOrderStatus(req.body.orderId, 'Deny Refund');
+    if (!order) {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cant cancel order');
+      }
+  res.send(order);
+  });
+  const completeOrder = catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const order = await orderService.changeOrderStatus(req.body.orderId, 'Done');
+    if (!order) {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cant cancel order');
+      }
+  res.send(order);
+  });
 
   const getOrderByUserId = catchAsync(async (req, res) => {
     const accessTokenFromHeader = req.headers.access_token;
@@ -66,6 +121,14 @@ const createOrder = catchAsync(async (req, res) => {
             throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
         }
     const orders = await orderService.getOrderForCourier();
+  res.send(orders);
+  });
+  const getDeliveringOrder= catchAsync(async (req, res) => {
+    const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader === '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+    const orders = await orderService.getOrderForCourier('Delivering');
   res.send(orders);
   });
 
@@ -97,5 +160,11 @@ module.exports = {
     getOrderForSeller,
     acceptOrder,
     courierAcceptOrder,
-    getOrderForCourier
+    getOrderForCourier,
+    deliveredOrder,
+    refundOrder,
+    acceptRefund,
+    denyRefund,
+    completeOrder,
+    getDeliveringOrder
 }

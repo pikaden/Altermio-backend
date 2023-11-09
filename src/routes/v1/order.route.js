@@ -15,8 +15,29 @@ router
   .route('/courier')
   .get(orderController.getOrderForCourier);
 router
+  .route('/courierAccept')
+  .post(orderController.courierAcceptOrder);
+router
+  .route('/courierDelivered')
+  .post(orderController.deliveredOrder);
+router
   .route('/acceptOrder')
   .post(orderController.acceptOrder);
+router
+  .route('/refundOrder')
+  .post(orderController.refundOrder);
+router
+  .route('/acceptRefund')
+  .post(orderController.acceptRefund);
+router
+  .route('/denyRefund')
+  .post(orderController.denyRefund);
+router
+  .route('/completeOrder')
+  .post(orderController.completeOrder);
+router
+  .route('/deliveringOrder')
+  .get(orderController.getDeliveringOrder);
 router
   .route('/forSeller')
   .get(orderController.getOrderForSeller)
