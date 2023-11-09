@@ -17,6 +17,7 @@ const getProducts = {
     category: Joi.string(),
     brand: Joi.string(),
     sortBy: Joi.string(),
+    activate: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
   }),
