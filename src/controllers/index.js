@@ -6,3 +6,5 @@ module.exports.productController = require('./product.controller');
 module.exports.notificationController = require('./notification.controller');
 module.exports.cartController = require('./cart.controller')
 module.exports.walletController = require('./wallet.controller')
+module.exports.chatController = require('./chat.controller');
+module.exports.messController = require('./message.controller');

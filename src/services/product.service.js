@@ -102,6 +102,11 @@ const updateProductById = async (accessTokenFromHeader, productId, updateBody) =
 
     // only seller can update their own product
     if (userId == product.sellerId) {
+        const productListId = updateBody.productListId;
+
+        updateBody.productListId = undefined;
+        updateBody.category = productListId;
+
         Object.assign(product, updateBody);
         await product.save();
         return product;
@@ -131,12 +136,14 @@ const deleteProductById = async (accessTokenFromHeader, productId) => {
         // get images to delete, query to get public_id
         const imageList = product.images;
 
-        // map through images and create a promise array using cloudinary delete function
-        await Promise.all(imageList.map(async (imageId) => {
-            await imageService.handleDelete(imageId);
-            await product.remove();
-        }));
-        return product;
+        if (imageList.length !== 0) {
+            // map through images and create a promise array using cloudinary delete function
+            await Promise.all(imageList.map(async (imageId) => {
+                await imageService.handleDelete(imageId);
+            }));
+        }
+
+        await product.remove();
     } else throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to do this command');
 };
 
@@ -276,7 +283,7 @@ const requestVerifyProduct = async (productId) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'product not found');
     }
     if (product.verify == activateStatus.PENDING) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'product has been reported');
+        throw new ApiError(httpStatus.BAD_REQUEST, 'request verify product has been sended');
     }
 
     product.verify = activateStatus.PENDING;
@@ -332,9 +339,24 @@ const denyVerifyProduct = async (type, productId) => {
     return product;
 }
 
+<<<<<<< HEAD
 const getProductByUserId = async (userId) => {
     const product = await Product.find({sellerId: userId})
     return product
+=======
+const getMyProducts = async (accessTokenFromHeader, options) => {
+    // get userId from token
+    const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
+    const userId = payload.sub;
+
+    const filter = {
+        $or: [
+            { sellerId: userId }
+        ]
+    }
+    const products = await Product.paginate(filter, options);
+    return products;
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 }
 
 module.exports = {
@@ -352,5 +374,9 @@ module.exports = {
     requestVerifyProduct,
     acceptVerifyProduct,
     denyVerifyProduct,
+<<<<<<< HEAD
     getProductByUserId
+=======
+    getMyProducts
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 };

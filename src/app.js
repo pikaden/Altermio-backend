@@ -13,6 +13,8 @@ const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
+const { createServer } = require("http");
+const { Server } = require('socket.io');
 
 const app = express();
 
@@ -63,5 +65,51 @@ app.use(errorConverter);
 
 // handle error
 app.use(errorHandler);
+
+const PORT = process.env.PORT;
+
+// config socket.io
+const httpServer = createServer(app);
+httpServer.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+const io = new Server(httpServer, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "*",
+    // credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  socket.on("setup", (userData) => {
+    socket.join(userData.id);
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
+  socket.on("new message", (newMessageRecieved) => {
+    var chat = newMessageRecieved.chat;
+
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user) => {
+      if (user.id == newMessageRecieved.sender.id) return;
+
+      socket.in(user.id).emit("message recieved", newMessageRecieved);
+    });
+  });
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData.id);
+  });
+});
 
 module.exports = app;

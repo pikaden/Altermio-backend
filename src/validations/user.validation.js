@@ -37,6 +37,7 @@ const updateUser = {
       lastName: Joi.string(),
       address: Joi.string(),
       phoneNumber: Joi.number().integer(),
+      role: Joi.string(),
     })
     .min(1),
 };
@@ -53,6 +54,7 @@ const updateUserAdmin = {
       lastName: Joi.string(),
       address: Joi.string(),
       phoneNumber: Joi.number().integer(),
+      role: Joi.string(),
     })
     .min(1),
 };

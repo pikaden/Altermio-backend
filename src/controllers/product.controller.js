@@ -62,14 +62,28 @@ const getProduct = catchAsync(async (req, res) => {
 
 // TODO: still update text, not update image list
 const updateProduct = catchAsync(async (req, res) => {
-    // get access token from headers
-    const accessTokenFromHeader = req.headers.access_token;
-    if (accessTokenFromHeader == '') {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
-    }
+    try {
+        // must use Multer to receive multipart/form-data
 
-    const product = await productService.updateProductById(accessTokenFromHeader, req.params.productId, req.body);
-    res.send(product);
+        // get access token from headers
+        const accessTokenFromHeader = req.headers.access_token;
+        if (accessTokenFromHeader == '') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+        }
+
+        // await create images in cloudinary,
+        // then save returned image id and public_id,
+        // then create product with other text field in productBody
+        const imageList = await productService.handlerMultipleUploadsProductImages(req, res);
+
+        const product = await productService.updateProductById(accessTokenFromHeader, req.params.productId, req.body);
+        res.send(product);
+    } catch (error) {
+        console.log(error);
+        res.status(httpStatus.NO_CONTENT).send({
+            message: error.message,
+        });
+    }
 });
 
 const deleteProduct = catchAsync(async (req, res) => {
@@ -119,9 +133,26 @@ const denyVerifyProduct = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).send(denyVerifyProduct);
 })
 
+<<<<<<< HEAD
 const getProductByUserId = catchAsync(async (req, res) => {
     const getProductByUserId = await productService.getProductByUserId(req.params.userId);
     res.status(httpStatus.OK).send(getProductByUserId);
+=======
+const getMyProducts = catchAsync(async (req, res) => {
+    // get access token from headers
+    const accessTokenFromHeader = req.headers.access_token;
+    if (accessTokenFromHeader == '') {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Access token not found');
+    }
+
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+
+    const product = await productService.getMyProducts(accessTokenFromHeader, options);
+    if (!product) {
+        res.status(httpStatus.NOT_FOUND, 'Product not found');
+    }
+    res.status(httpStatus.OK).send(product);
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 })
 
 module.exports = {
@@ -138,5 +169,9 @@ module.exports = {
     requestVerifyProduct,
     acceptVerifyProduct,
     denyVerifyProduct,
+<<<<<<< HEAD
     getProductByUserId
+=======
+    getMyProducts
+>>>>>>> 3253b171d630ec81862030e2256fa5bf59013fa0
 };
