@@ -123,7 +123,7 @@ const changeOrderStatus = async (orderId, status = 'Denied') => {
 
 const getOrderForCourier = async (status = 'Accepted') => {
     try {
-        const orders = await Order.find({ status }).populate('item').exec();
+        const orders = await Order.find({ status }).populate('item').populate('customerId').exec();
         return orders;
     } catch (err) {
         console.error(err);
