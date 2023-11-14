@@ -11,10 +11,10 @@ const router = express.Router();
 
 router
   .route('/user')
-  .post(auth('postComment'), validate(commentValidation.testPostComment), commentController.postComment)
+  .post(auth('postComment'), validate(commentValidation.tokenUserIdPostComment), commentController.postComment)
 
 router
-  .route('/user/:userId')
+  .route('/users/:userId')
   // userId here can be sellerId or buyerId
   .get(validate(commentValidation.getCommentsByUserId), commentController.getCommentsByUserId)
   // userId here is buyerId
