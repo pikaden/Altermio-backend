@@ -1,10 +1,23 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
-const postComment = {
+const tokenUserIdPostComment = {
   body: Joi.object().keys({
     content: Joi.string().allow(''),
     productId: Joi.string().required(),
+    sellerId: Joi.string().custom(objectId),
+    rating: Joi.number().integer().min(0).max(5)
+  }),
+};
+
+const postComment = {
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
+  }),
+  body: Joi.object().keys({
+    content: Joi.string().allow(''),
+    productId: Joi.string().required(),
+    sellerId: Joi.string().custom(objectId),
     rating: Joi.number().integer().min(0).max(5)
   }),
 };
@@ -58,5 +71,6 @@ module.exports = {
   getComment,
   updateComment,
   deleteComment,
-  patchReportComment
+  patchReportComment,
+  tokenUserIdPostComment
 };
