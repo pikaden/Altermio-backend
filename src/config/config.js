@@ -2,10 +2,14 @@ const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
 
+//  importing resolve from path module 
+const { resolve } = require('path')
+
+dotenv.config({ path: resolve(__dirname, '../../.env') })
+
 // dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-console.log(process.env);
-console.log(`Hello ${process.env.MONGODB_URL}`)
+// console.log(`Hello ${process.env.MONGODB_URL}`)
 
 const envVarsSchema = Joi.object()
   .keys({
