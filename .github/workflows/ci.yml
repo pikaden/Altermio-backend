@@ -11,4 +11,4 @@ jobs:
     - run: npm install
     - run: npm start
       env:
-        DOTENV_KEY: ${{ secrets.DOTENV_KEY }}
+        DOTENV_KEY: dotenv://:key_d51e49bab1ec05303e89a52fe149c60fc3bc9521ebe0c658a47a1833b0688c1d@dotenv.org/vault/.env.vault?environment=ci
