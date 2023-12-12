@@ -1,4 +1,4 @@
-name: npm run build
+name: npm start
 on: [push]
 jobs:
   build:
@@ -9,6 +9,6 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-    - run: npm run build
+    - run: npm start
       env:
         DOTENV_KEY: ${{ secrets.DOTENV_KEY }}
