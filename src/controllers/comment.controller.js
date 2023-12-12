@@ -14,7 +14,7 @@ const postComment = catchAsync(async (req, res) => {
 
 const getComment = catchAsync(async (req, res) => {
   const comment = await commentService.getCommentById(req.params.commentId);
-  res.status(httpStatus.OK).send(comment + 'ok luon');
+  res.status(httpStatus.OK).send(comment);
 });
 
 const getCommentsByUserId = catchAsync(async (req, res) => {
