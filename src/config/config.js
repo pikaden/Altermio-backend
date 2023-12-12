@@ -5,7 +5,6 @@ const Joi = require('joi');
 // dotenv.config({ path: path.join(__dirname, '../../.env') });
 dotenv.config();
 
-console.log(`Hello ${process.env.MONGODB_URL}`)
 
 const envVarsSchema = Joi.object()
   .keys({
@@ -30,6 +29,8 @@ const envVarsSchema = Joi.object()
   .unknown();
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
+
+console.log(`Hello ${process.env.MONGODB_URL}`)
 
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
