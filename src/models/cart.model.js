@@ -1,19 +1,21 @@
 const mongoose = require('mongoose');
 
-const { productSchema } = require('./product.model');
-
-const cartSchema = mongoose.Schema({
+const cartSchema = mongoose.Schema(
+  {
     customerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
-    productId: [{
+    productId: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-    }]
-}, { timestamps: true }
-)
+        ref: 'Product',
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 /**
  * @typedef Cart

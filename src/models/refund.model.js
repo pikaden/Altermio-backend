@@ -1,27 +1,29 @@
 const mongoose = require('mongoose');
 
-const refundSchema = mongoose.Schema({
+const refundSchema = mongoose.Schema(
+  {
     buyerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
     sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
     productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Product'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Product',
     },
     status: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-}, { timestamps: true }
-)
+  },
+  { timestamps: true }
+);
 
 /**
  * @typedef Refund

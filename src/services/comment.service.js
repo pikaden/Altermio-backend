@@ -1,10 +1,8 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
 const { Comment, User } = require('../models');
-const { tokenService } = require('.');
 const ApiError = require('../utils/ApiError');
 const { userService } = require('.');
-const { tokenTypes } = require('../config/tokens');
-const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 
 /**
@@ -15,11 +13,10 @@ const config = require('../config/config');
 const postComment = async (accessTokenFromHeader, commentBody) => {
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
   const buyerId = payload.sub;
-  commentBody.buyerId = buyerId;
-  const newComment = await Comment.create(commentBody);
+  const newComment = await Comment.create({ ...commentBody, buyerId });
 
   // save newComment at user.comments, both seller and buyer
-  const sellerId = commentBody.sellerId;
+  const { sellerId } = commentBody;
   const buyer = await userService.getUserById(buyerId);
   const seller = await userService.getUserById(sellerId);
 
@@ -76,7 +73,7 @@ const updateCommentById = async (accessTokenFromHeader, commentId, commentBody) 
   const userId = payload.sub;
 
   // only author can update their own comment
-  if (userId == comment.buyerId) {
+  if (userId === comment.buyerId) {
     Object.assign(comment, commentBody);
     await comment.save();
     return comment;
@@ -104,11 +101,12 @@ const deleteCommentById = async (accessTokenFromHeader, commentId) => {
   const userRole = user.role;
 
   // so sanh role comment.buyerId and userId to delete
-  if (userRole == 'admin' || userRole == 'moderator' || (userRole == 'user' && userId == comment.buyerId)) {
+  if (userRole === 'admin' || userRole === 'moderator' || (userRole === 'user' && userId === comment.buyerId)) {
     // delete in comments, users
     await comment.remove();
     return comment;
-  } else throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to do this command');
+  }
+  throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to do this command');
 };
 
 /**
@@ -135,7 +133,7 @@ const reportComment = async (typeReport, commentId) => {
   if (comment.isReported) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Comment has been reported');
   }
-  if (typeReport != 'submit') {
+  if (typeReport !== 'submit') {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Type report is not right');
   }
 
@@ -159,7 +157,7 @@ const denyReportedComment = async (typeReport, commentId) => {
   if (!comment.isReported) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Comment has not been reported');
   }
-  if (typeReport != 'deny') {
+  if (typeReport !== 'deny') {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Type report is not right');
   }
 

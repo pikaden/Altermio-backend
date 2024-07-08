@@ -51,13 +51,13 @@ const getReportedComments = catchAsync(async (req, res) => {
 });
 
 const reportComment = catchAsync(async (req, res) => {
-  const reportComment = await commentService.reportComment(req.params.type, req.params.commentId);
-  res.status(httpStatus.OK).send(reportComment);
+  const reportComments = await commentService.reportComment(req.params.type, req.params.commentId);
+  res.status(httpStatus.OK).send(reportComments);
 });
 
 const denyReportedComment = catchAsync(async (req, res) => {
-  const denyReportedComment = await commentService.denyReportedComment(req.params.type, req.params.commentId);
-  res.status(httpStatus.OK).send(denyReportedComment);
+  const denyReportedComments = await commentService.denyReportedComment(req.params.type, req.params.commentId);
+  res.status(httpStatus.OK).send(denyReportedComments);
 });
 
 module.exports = {

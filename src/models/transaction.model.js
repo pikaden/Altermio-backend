@@ -1,32 +1,34 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = mongoose.Schema({
+const transactionSchema = mongoose.Schema(
+  {
     customerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     paymentDate: {
-        type: Date,
+      type: Date,
     },
     paymentMethod: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     amount: {
-        type: Number,
-        default: 0,
-        required: true,
+      type: Number,
+      default: 0,
+      required: true,
     },
     type: {
-        type: Boolean,
-        required: true,
+      type: Boolean,
+      required: true,
     },
     status: {
-        type: Boolean,
-        required: true,
-    }
-}, { timestamps: true }
-)
+      type: Boolean,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
 /**
  * @typedef Transaction

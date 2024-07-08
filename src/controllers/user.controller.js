@@ -24,14 +24,14 @@ const searchUser = catchAsync(async (req, res) => {
 
   const keyword = req.query.search
     ? {
-      $or: [
-        { firstName: { $regex: req.query.search, $options: "i" } },
-        { lastName: { $regex: req.query.search, $options: "i" } },
-        { email: { $regex: req.query.search, $options: "i" } },
-      ],
-    }
+        $or: [
+          { firstName: { $regex: req.query.search, $options: 'i' } },
+          { lastName: { $regex: req.query.search, $options: 'i' } },
+          { email: { $regex: req.query.search, $options: 'i' } },
+        ],
+      }
     : {};
-  
+
   const users = await userService.searchUser(keyword, accessTokenFromHeader);
   res.send(users);
 });
@@ -83,5 +83,5 @@ module.exports = {
   getUserByToken,
   updateUser,
   deleteUser,
-  updateUserAdmin
+  updateUserAdmin,
 };

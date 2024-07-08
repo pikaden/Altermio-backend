@@ -1,8 +1,9 @@
 /* eslint-disable global-require */
+const httpStatus = require('http-status');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
+const ApiError = require('../utils/ApiError');
 const { Wallet } = require('../models');
-const configVNP = require('../config/default.json');
 const config = require('../config/config');
 
 const createWallet = async (userId) => {
@@ -25,10 +26,6 @@ const claimMoneyById = async (accessTokenFromHeader, req) => {
 };
 
 const transferMoneyById = async (buyerId, amount) => {
-  // const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
-  // const buyerId = payload.sub;
-  // const amount = req.body.amount;
-  console.log(buyerId + '  ' + amount);
   const buyerWallet = await getWalletById(buyerId);
   if (buyerWallet.coin < amount) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Not enough money');
@@ -63,7 +60,7 @@ const addBalance = async (userId, amount) => {
   return wallet;
 };
 
-const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
+const addBalanceByBank = async (accessTokenFromHeader, req) => {
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);
   const userId = payload.sub;
 
@@ -78,10 +75,10 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 
-  const tmnCode = configVNP.vnp_TmnCode;
-  const secretKey = configVNP.vnp_HashSecret;
-  let vnpUrl = configVNP.vnp_Url;
-  const returnUrl = configVNP.vnp_ReturnUrl;
+  const tmnCode = process.env.vnp_TmnCode;
+  const secretKey = process.env.vnp_HashSecret;
+  let vnpUrl = process.env.vnp_Url;
+  const returnUrl = process.env.vnp_ReturnUrl;
 
   const orderId = moment(date).format('DDHHmmss');
   const { amount } = req.body;
@@ -110,29 +107,31 @@ const addBalanceByBank = async (accessTokenFromHeader, req, res) => {
   // eslint-disable-next-line no-use-before-define, camelcase
   vnp_Params = sortObject(vnp_Params);
 
+  // eslint-disable-next-line import/no-extraneous-dependencies
   const querystring = require('qs');
   const signData = querystring.stringify(vnp_Params, { encode: false });
   const crypto = require('crypto');
   const hmac = crypto.createHmac('sha512', secretKey);
-  const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
+  const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
   vnp_Params.vnp_SecureHash = signed;
   vnpUrl += `?${querystring.stringify(vnp_Params, { encode: false })}`;
 
-  console.log(vnpUrl);
   return vnpUrl;
 };
 
 const returnIpn = async (req, res) => {
   const { userId } = req.params;
 
+  // eslint-disable-next-line camelcase
   let vnp_Params = req.query;
   const secureHash = vnp_Params.vnp_SecureHash;
-  const secretKey = configVNP.vnp_HashSecret;
+  const secretKey = process.env.vnp_HashSecret;
   const rspCode = vnp_Params.vnp_ResponseCode;
 
   delete vnp_Params.vnp_SecureHash;
   delete vnp_Params.vnp_SecureHashType;
 
+  // eslint-disable-next-line camelcase
   vnp_Params = sortObject(vnp_Params);
 
   // eslint-disable-next-line import/no-extraneous-dependencies
@@ -160,7 +159,7 @@ const returnIpn = async (req, res) => {
           if (rspCode == '00') {
             // get user ID by token right here
 
-            const wallet = addBalance(userId, vnp_Params.vnp_Amount / 100 - ( vnp_Params.vnp_Amount*1/10000));
+            addBalance(userId, vnp_Params.vnp_Amount / 100 - (vnp_Params.vnp_Amount * 1) / 10000);
             res.status(200).json({ RspCode: '00', Message: 'Success' });
           } else {
             // that bai
