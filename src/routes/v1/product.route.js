@@ -15,49 +15,43 @@ const router = express.Router();
 // user can request verify product, admin and moderator can accept, deny, get all verify products
 
 router
-    .route('/')
-    .post(auth('createProduct'), validate(productValidation.createProduct), productController.createProduct)
-    .get(validate(productValidation.getProducts), productController.getProducts)
+  .route('/')
+  .post(auth('createProduct'), validate(productValidation.createProduct), productController.createProduct)
+  .get(validate(productValidation.getProducts), productController.getProducts);
+
+router.route('/user/:userId').get(validate(productValidation.getProducts), productController.getProductByUserId);
+
+router.route('/search').get(validate(productValidation.searchProduct), productController.searchProduct);
 
 router
-    .route('/user/:userId')
-    .get(validate(productValidation.getProducts), productController.getProductByUserId)
+  .route('/:productId')
+  .get(validate(productValidation.getProduct), productController.getProduct)
+  .put(auth('updateProduct'), validate(productValidation.updateProduct), productController.updateProduct)
+  .delete(auth('deleteProduct'), validate(productValidation.deleteProduct), productController.deleteProduct);
 
 router
-    .route('/search')
-    .get(validate(productValidation.searchProduct), productController.searchProduct)
+  .route('/manageProducts/all')
+  .get(auth('manageProducts'), validate(productValidation.getManagedProducts), productController.getManagedProducts);
 
 router
-    .route('/:productId')
-    .get(validate(productValidation.getProduct), productController.getProduct)
-    .put(auth('updateProduct'), validate(productValidation.updateProduct), productController.updateProduct)
-    .delete(auth('deleteProduct'), validate(productValidation.deleteProduct), productController.deleteProduct)
+  .route('/reportProducts/:productId')
+  .patch(auth('reportProduct'), validate(productValidation.reportProduct), productController.reportProduct);
 
 router
-    .route('/manageProducts/all')
-    .get(auth('manageProducts'), validate(productValidation.getManagedProducts), productController.getManagedProducts)
-
-router
-    .route('/reportProducts/:productId')
-    .patch(auth('reportProduct'), validate(productValidation.reportProduct), productController.reportProduct)
-
-router
-    .route('/manageReportedProducts/:productId/:type')
-    .put(auth('manageProducts'), validate(productValidation.acceptReportedProduct), productController.acceptReportedProduct)
-    .patch(auth('manageProducts'), validate(productValidation.denyReportedProduct), productController.denyReportedProduct)
+  .route('/manageReportedProducts/:productId/:type')
+  .put(auth('manageProducts'), validate(productValidation.acceptReportedProduct), productController.acceptReportedProduct)
+  .patch(auth('manageProducts'), validate(productValidation.denyReportedProduct), productController.denyReportedProduct);
 
 // same with report product
 router
-    .route('/requestVerifyProduct/:productId')
-    .patch(auth('reportProduct'), validate(productValidation.reportProduct), productController.requestVerifyProduct)
+  .route('/requestVerifyProduct/:productId')
+  .patch(auth('reportProduct'), validate(productValidation.reportProduct), productController.requestVerifyProduct);
 
 router
-    .route('/manageVerifyProducts/:productId/:type')
-    .put(auth('manageProducts'), validate(productValidation.acceptReportedProduct), productController.acceptVerifyProduct)
-    .patch(auth('manageProducts'), validate(productValidation.denyReportedProduct), productController.denyVerifyProduct)
+  .route('/manageVerifyProducts/:productId/:type')
+  .put(auth('manageProducts'), validate(productValidation.acceptReportedProduct), productController.acceptVerifyProduct)
+  .patch(auth('manageProducts'), validate(productValidation.denyReportedProduct), productController.denyVerifyProduct);
 
-router
-    .route('/manageProducts/myProducts')
-    .get(productController.getMyProducts)
+router.route('/manageProducts/myProducts').get(productController.getMyProducts);
 
 module.exports = router;

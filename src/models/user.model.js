@@ -44,15 +44,15 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Image',
       // TODO: set default image for user avatar
-      default: mongoose.Types.ObjectId('654a711c0126073adc731680')
+      default: mongoose.Types.ObjectId('654a711c0126073adc731680'),
     },
     address: {
       type: String,
-      default: ''
+      default: '',
     },
     phoneNumber: {
       type: String,
-      trim: false
+      trim: false,
     },
     role: {
       type: String,
@@ -67,14 +67,18 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    transactions: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Transaction'
-    }],
-    comments: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment'
-    }]
+    transactions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaction',
+      },
+    ],
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+      },
+    ],
   },
   {
     timestamps: true,
@@ -84,7 +88,7 @@ const userSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 userSchema.plugin(toJSON);
 userSchema.plugin(paginate);
-userSchema.plugin(paginateRefArrays)
+userSchema.plugin(paginateRefArrays);
 
 /**
  * Check if email is taken

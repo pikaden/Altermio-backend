@@ -11,18 +11,30 @@ const router = express.Router();
 // everyone can get productLists, productList
 
 router
-    .route('/')
-    .post(auth('manageProductList'), validate(productListValidation.createProductList), productListController.createProductList)
-    .get(productListController.getProductLists);
+  .route('/')
+  .post(
+    auth('manageProductList'),
+    validate(productListValidation.createProductList),
+    productListController.createProductList
+  )
+  .get(productListController.getProductLists);
 
 router
-    .route('/manage/:productListId')
-    .get(validate(productListValidation.getProductList), productListController.getProductsByProductListId)
-    .patch(auth('manageProductList'), validate(productListValidation.updateProductList), productListController.updateProductList)
-    .delete(auth('manageProductList'), validate(productListValidation.deleteProductList), productListController.deleteProductList)
+  .route('/manage/:productListId')
+  .get(validate(productListValidation.getProductList), productListController.getProductsByProductListId)
+  .patch(
+    auth('manageProductList'),
+    validate(productListValidation.updateProductList),
+    productListController.updateProductList
+  )
+  .delete(
+    auth('manageProductList'),
+    validate(productListValidation.deleteProductList),
+    productListController.deleteProductList
+  );
 
 router
-    .route('/:productListName')
-    .get(validate(productListValidation.getProductListByName), productListController.getProductListByName)
+  .route('/:productListName')
+  .get(validate(productListValidation.getProductListByName), productListController.getProductListByName);
 
 module.exports = router;

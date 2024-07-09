@@ -53,7 +53,7 @@ const refreshAuth = async (refreshToken) => {
 
 const checkTakenEmail = async (email) => {
   const checkEmail = await userService.getUserByEmail(email);
-  return (checkEmail) ? true : false;
+  return !!checkEmail;
 };
 
 /**

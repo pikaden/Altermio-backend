@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 
-const walletSchema = mongoose.Schema({
+const walletSchema = mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
     coin: {
-        type: Number,
-        required: true,
-        default: 0,
+      type: Number,
+      required: true,
+      default: 0,
     },
-}, { timestamps: true }
-)
+  },
+  { timestamps: true }
+);
 
 /**
  * @typedef Wallet

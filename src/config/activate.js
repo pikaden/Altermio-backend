@@ -1,9 +1,9 @@
 const activateStatus = {
-    PENDING: 'pending',
-    ACCEPT: 'accept',
-    DENY: 'deny'
+  PENDING: 'pending',
+  ACCEPT: 'accept',
+  DENY: 'deny',
 };
 
 module.exports = {
-    activateStatus
+  activateStatus,
 };

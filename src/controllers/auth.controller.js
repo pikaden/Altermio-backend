@@ -40,7 +40,7 @@ const resetPassword = catchAsync(async (req, res) => {
 
 const checkTakenEmail = catchAsync(async (req, res) => {
   const s = await authService.checkTakenEmail(req.body.email);
-  res.send(s)
+  res.send(s);
 });
 
 const sendVerificationEmail = catchAsync(async (req, res) => {

@@ -36,9 +36,9 @@ const queryUsers = async (filter, options) => {
 
 /**
  * Search user by firstname, lastname or email, except their own account
- * @param {String} keyword 
- * @param {String} accessTokenFromHeader 
- * @returns 
+ * @param {String} keyword
+ * @param {String} accessTokenFromHeader
+ * @returns
  */
 const searchUser = async (keyword, accessTokenFromHeader) => {
   const payload = jwt.verify(accessTokenFromHeader, config.jwt.secret);

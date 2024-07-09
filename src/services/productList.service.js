@@ -1,7 +1,11 @@
 const httpStatus = require('http-status');
 const { ProductList } = require('../models');
 const ApiError = require('../utils/ApiError');
-const mongoose = require('mongoose');
+
+const queryProductList = async () => {
+  const productList = await ProductList.find();
+  return productList;
+};
 
 /**
  * Create a product list
@@ -12,16 +16,11 @@ const createProductList = async (productListBody) => {
   // check productList has been duplicated or not
   const productList = await queryProductList();
 
-  if (productList.categoryName == productListBody.categoryName) {
+  if (productList.categoryName === productListBody.categoryName) {
     throw new ApiError(httpStatus.NOT_FOUND, 'product list has been duplicated');
   }
 
   return ProductList.create(productListBody);
-};
-
-const queryProductList = async () => {
-  const productList = await ProductList.find();
-  return productList;
 };
 
 /**
@@ -35,24 +34,24 @@ const getProductListById = async (id) => {
 
 /**
  * Return pagination products
- * @param {ObjectId} productListId 
- * @param {string} options 
+ * @param {ObjectId} productListId
+ * @param {string} options
  * @returns {Promise<QueryResult>}
  */
 const getProductsByProductListId = async (productListId, options) => {
   const refArray = 'products';
   const products = await ProductList.paginateRefArrays(productListId, refArray, options);
   return products;
-}
+};
 
 /**
  * get product list by name
- * @param {String} productListName 
+ * @param {String} productListName
  * @returns {Promise<ProductList>}
  */
 const getProductListByName = async (productListName) => {
-  return ProductList.findOne({ categoryName: productListName })
-}
+  return ProductList.findOne({ categoryName: productListName });
+};
 
 /**
  * Update productList by id
@@ -91,5 +90,5 @@ module.exports = {
   getProductsByProductListId,
   getProductListByName,
   updateProductListById,
-  deleteProductListById
+  deleteProductListById,
 };
